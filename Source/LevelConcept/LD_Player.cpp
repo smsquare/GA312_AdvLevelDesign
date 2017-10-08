@@ -229,10 +229,8 @@ FDetectWallHitInfo ALD_Player::DetectWall() {
 	// Create local varialbes to be used in SphereTrace
 	// Start at player feet
 	FVector PlayerLocation = GetActorLocation();
-	//FVector EndLocation = PlayerLocation + (100 * GetActorUpVector());
-	FVector StartLocation = PlayerLocation + (-35 * GetActorUpVector());
-	//FVector EndLocation = PlayerLocation + (25 * GetActorForwardVector());
-	FVector EndLocation = StartLocation + (25 * GetActorForwardVector());
+	FVector StartLocation = PlayerLocation + (-35 * GetActorUpVector()) + (-25 * FVector(1.0, 0.0, 0.0));
+	FVector EndLocation = StartLocation + (50 * FVector(1.0, 0.0, 0.0));
 
 	// radius of the sphere to trace
 	float Radius = 25;
