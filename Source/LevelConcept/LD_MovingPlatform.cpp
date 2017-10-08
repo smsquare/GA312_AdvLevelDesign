@@ -142,13 +142,13 @@ ALD_MovingPlatform::ALD_MovingPlatform(const FObjectInitializer& ObjectInitializ
 
 	// One time initialization
 	struct FConstructorStatics {
-		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> SphereMesh;
+		//ConstructorHelpers::FObjectFinderOptional<UStaticMesh> SphereMesh;
 		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> DebugPlatformMesh;
 		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> DebugLineMesh;
 		ConstructorHelpers::FObjectFinder<UMaterialInstance> DebugPlatformMat;
 		ConstructorHelpers::FObjectFinder<UMaterialInstance> DebugLineMat;
 		FConstructorStatics()
-			: SphereMesh(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere")),
+			: //SphereMesh(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere")),
 			DebugPlatformMesh(TEXT("/Game/Geometry/Meshes/SM_Platform.SM_Platform")),
 			DebugLineMesh(TEXT("/Game/Geometry/Meshes/SM_DebugLine.SM_DebugLine")),
 			DebugPlatformMat(TEXT("/Game/Geometry/Materials/IMAT_DebugPlatform.IMAT_DebugPlatform")),
@@ -188,13 +188,13 @@ ALD_MovingPlatform::ALD_MovingPlatform(const FObjectInitializer& ObjectInitializ
 	DirectionToMove = 0;
 
 	// Initialize LocationMarker
-	LocationMarker = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Location Marker"));
-	LocationMarker->AttachToComponent(PlatformMesh, FAttachmentTransformRules::KeepWorldTransform);
-	LocationMarker->SetStaticMesh(ConstructorStatics.SphereMesh.Get());
-	LocationMarker->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
-	LocationMarker->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
-	LocationMarker->SetVisibility(false);
-	LocationMarker->SetHiddenInGame(true);
+	//LocationMarker = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Location Marker"));
+	//LocationMarker->AttachToComponent(PlatformMesh, FAttachmentTransformRules::KeepWorldTransform);
+	//LocationMarker->SetStaticMesh(ConstructorStatics.SphereMesh.Get());
+	//LocationMarker->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
+	//LocationMarker->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
+	//LocationMarker->SetVisibility(false);
+	//LocationMarker->SetHiddenInGame(true);
 
 	// Spikes
 	HasSpikes = false;
