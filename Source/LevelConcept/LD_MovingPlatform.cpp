@@ -393,7 +393,7 @@ void ALD_MovingPlatform::InitDirectionToMove() {
 		}
 		else {
 			if (GEngine) GEngine->AddOnScreenDebugMessage(
-				-1, 3.0f, FColor::Red, "ERROR: MUST SET VerticalStartDirection!");
+				-1, 3.0f, FColor::Red, "ERROR " + GetActorLabel() + ": MUST SET VerticalStartDirection!");
 		}
 		break;
 	// DEPTH //
@@ -406,7 +406,7 @@ void ALD_MovingPlatform::InitDirectionToMove() {
 		}
 		else {
 			if (GEngine) GEngine->AddOnScreenDebugMessage(
-				-1, 3.0f, FColor::Red, "ERROR: MUST SET DepthStartDirection!");
+				-1, 3.0f, FColor::Red, "ERROR " + GetActorLabel() + ": MUST SET DepthStartDirection!");
 		}
 		break;
 	case EPlatformDirection::PO_Path:
@@ -420,11 +420,11 @@ void ALD_MovingPlatform::InitDirectionToMove() {
 		}
 		else {
 			if (GEngine) GEngine->AddOnScreenDebugMessage(
-				-1, 3.0f, FColor::Red, "ERROR: MUST SET RadialDirection!");
+				-1, 3.0f, FColor::Red, "ERROR " + GetActorLabel() + ": MUST SET RadialDirection!");
 		}
 		break;
 	default:
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "ERROR: MUST SET DIRECTION!");
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "ERROR " + GetActorLabel() + ": MUST SET DIRECTION!");
 		break;
 	}
 }
