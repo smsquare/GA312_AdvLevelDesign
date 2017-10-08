@@ -31,7 +31,7 @@ ALD_Player::ALD_Player() {
 	HasBossKey = false;
 
 	/***** JUMPING *****/
-	JumpStats.EnableDoubleJumping();
+	JumpStats.DisableDoubleJump();
 	UsedDoubleJump = false;
 
 	// COMBAT //
