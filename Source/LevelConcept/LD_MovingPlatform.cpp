@@ -381,7 +381,7 @@ void ALD_MovingPlatform::InitDirectionToMove() {
 			DirectionToMove = 1;
 		} else {
 			if (GEngine) GEngine->AddOnScreenDebugMessage(
-				-1, 3.0f, FColor::Red, "ERROR: MUST SET HorizontalStartDirection!");
+				-1, 3.0f, FColor::Red, "ERROR " + GetActorLabel() + ": MUST SET HorizontalStartDirection!");
 		} 
 		break;
 	case EPlatformDirection::PO_Vertical:
