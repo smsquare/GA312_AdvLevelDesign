@@ -95,9 +95,9 @@ public:
 		WallOnPlayerSide = 0;
 		WallHoldDuration = 0.0f;
 
-		FallOffPointTouched = true;
+		FallOffPointTouched = false;
 		HangingOnWall = false;
-		CanDoubleJump = true;
+		CanDoubleJump = false;
 		DoubleJumpEnabled = false;
 		
 	}
