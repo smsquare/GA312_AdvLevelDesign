@@ -86,7 +86,7 @@ public:
 	/****** CONSTRUCTOR ******/
 	FJumpVariables() {
 		DebugInfo = false;
-		JumpPower = 1334.0f;
+		JumpPower = 1000.0f;
 		MaxSlideVelocity = 1000.0f;
 		FallOffWallHeight = 0.0;
 
