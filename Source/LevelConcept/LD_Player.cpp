@@ -290,6 +290,7 @@ void ALD_Player::PlayerJump() {
 			// If you can jump off a wall do it
 			if (WallHitInfo.GetCanJump()) {
 				// Set movement mode to allow user to hang on / slide on wall
+				GetCharacterMovement()->StopMovementImmediately();
 				GetCharacterMovement()->SetMovementMode(MOVE_Custom, (uint8)ECustomMovementType::CMT_WallSlide);
 				JumpStats.SetHangingOnWall(true);
 				JumpStats.SetWallOnPlayerSide(WallHitInfo.GetWallDirection());
@@ -329,15 +330,16 @@ void ALD_Player::PlayerStopJump() {
 	// If you are hanging on a wall, jump off
 	if (JumpStats.GetHangingOnWall()) {
 		// Multiply JumpStats.GetWallOnPlayerSide into the y value for it to launch in the proper direction
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
 		GetCharacterMovement()->AddImpulse(
 			FVector(
-				-1 * JumpStats.GetWallOnPlayerSide() * JumpStats.JumpPower * 0.5, // -1 is for making sure you apply jump in the proper direction, inverts GetWallOnPlayerSide()
+				-1 * JumpStats.GetWallOnPlayerSide() * JumpStats.JumpPower, // -1 is for making sure you apply jump in the proper direction, inverts GetWallOnPlayerSide()
 				0.0f,
 				JumpStats.JumpPower * ROOT_THREE_OVER_TWO
 			),
 			true 
 		);
-		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
+		
 		JumpStats.SetFallOffPointTouched(false);
 		JumpStats.SetHangingOnWall(false);
 		IsSlidingDownWall = false;
