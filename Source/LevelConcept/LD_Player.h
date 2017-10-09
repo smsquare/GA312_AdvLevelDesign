@@ -182,7 +182,7 @@ public:
 		return WallHoldDuration;
 	}
 	
-	void EnableDoubleJumping() {
+	void EnableDoubleJump() {
 		DoubleJumpEnabled = true;
 		CanDoubleJump = true;
 	}
