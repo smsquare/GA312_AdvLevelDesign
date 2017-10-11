@@ -80,6 +80,7 @@ void ALD_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	InputComponent->BindAction("Kick", IE_Pressed, this, &ALD_Player::PressedKick);
 	InputComponent->BindAction("Interact", IE_Pressed, this, &ALD_Player::OpenDoor);
 	InputComponent->BindAction("Interact", IE_Pressed, this, &ALD_Player::PushLever);
+	InputComponent->BindAction("DEBUG_ToggleDoubleJump", IE_Pressed, this, &ALD_Player::DEBUG_ToggleDoubleJump);
 }
 
 void ALD_Player::DamagePlayer(float amount) {
@@ -377,6 +378,12 @@ void ALD_Player::FallOffWall() {
 	JumpStats.SetHangingOnWall(false);
 	IsSlidingDownWall = false;
 	ClearWallSlideTimer();
+}
+
+void ALD_Player::DEBUG_ToggleDoubleJump() {
+	JumpStats.GetDoubleJumpEnabled() ? 
+		JumpStats.DisableDoubleJump() :
+		JumpStats.EnableDoubleJump();
 }
 
 /*************************************************************************

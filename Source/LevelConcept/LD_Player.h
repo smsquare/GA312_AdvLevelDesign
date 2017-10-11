@@ -99,7 +99,6 @@ public:
 		HangingOnWall = false;
 		CanDoubleJump = false;
 		DoubleJumpEnabled = false;
-		
 	}
 
 	/****** Methods for FPlayerJumpVariables ******/
@@ -316,7 +315,8 @@ public:
 	virtual void Landed(const FHitResult& Hit) override;
 	void StartWallSlide();
 	void FallOffWall();
-
+	/* DEBUG FUNCTIONS FOR JUMPING */
+	void DEBUG_ToggleDoubleJump();
 	//*********************** COMBAT **************************//
 	void PressedLightBasicAttack();
 	void PressedHeavyBasicAttack();
