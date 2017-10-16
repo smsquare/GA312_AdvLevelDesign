@@ -6,10 +6,12 @@ ABASE_Projectile::ABASE_Projectile() {
  	PrimaryActorTick.bCanEverTick = true;
 
 	ProjectileName = "_UNKNOWN_PROJECTILE_";
+	ProjectileLifeSpan = 3.0f;
+	ProjectileRateOfFire = 1.0f;
+
 	InitialSpeed = 500.0f;
 	MaxSpeed = 500.0f;
-	ProjectileLifeSpan = 3.0f;
-
+	
 	// Create a SphereComponent for projectile collider
 	pCollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	pCollisionComponent->InitSphereRadius(15.0f);
@@ -30,7 +32,6 @@ ABASE_Projectile::ABASE_Projectile() {
 	pProjectileMovementComponent->SetPlaneConstraintAxisSetting(EPlaneConstraintAxisSetting::Y);
 }
 
-// 
 void ABASE_Projectile::LaunchProjectile(const FVector& aLaunchDirection) {
 	// Use the variable on the projectile instead of the movement component.
 	// This is mainly so I can change the value in the blueprint without having to recompile
