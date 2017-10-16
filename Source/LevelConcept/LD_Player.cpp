@@ -37,6 +37,7 @@ ALD_Player::ALD_Player() {
 
 	// COMBAT //
 	pTypeOfProjectile = nullptr;
+	IsFireOnCooldown = false;
 	LightBADamage = 15.0f;
 	HeavyBACooldown = 37.5f;
 	BasicAttackInUse = EBasicAttackType::NONE;
@@ -49,6 +50,13 @@ ALD_Player::ALD_Player() {
 // Called when the game starts or when spawned
 void ALD_Player::BeginPlay() {
 	Super::BeginPlay();	
+}
+
+void ALD_Player::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
+
+	// Clear ALL timers on this object.
+	GetWorldPtr()->GetTimerManager().ClearAllTimersForObject(this);	
 }
 
 // Called every frame
@@ -421,6 +429,14 @@ void ALD_Player::PressedKick() {
 	if (!GetCharacterMovement()->IsFalling()) {
 		IsPlayerKicking = true;
 	}
+}
+
+bool ALD_Player::GetIsFireOnCooldown() const {
+	return IsFireOnCooldown;
+}
+
+void ALD_Player::SetIsFireOnCooldown(const bool& value) {
+	IsFireOnCooldown = value;
 }
 
 EBasicAttackType ALD_Player::GetBasicAttackInUse() const {

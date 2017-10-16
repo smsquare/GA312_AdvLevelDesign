@@ -265,17 +265,9 @@ public:
 	PUBLIC METHODS
 *********************/
 public:
-	
-	// Sets default values for this character's properties
 	ALD_Player();
-	//TODO: AKOA_PROTO_Character(const FObjectInitializer& ObjectInitializer);
-	virtual void BeginPlay() override;
 	virtual void Tick( float DeltaSeconds ) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	/****** TICK ******/
-	//TODO: IMPLEMENT TICK 
-	//virtual void Tick(float DeltaSeconds) override;
 
 	//******************** PLAYER STATS ************************//
 	UFUNCTION(BlueprintCallable, Category = "Player|Stats|HP")
@@ -333,6 +325,11 @@ public:
 	void PressedHeavyBasicAttack();
 	void PressedKick();
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
+	bool GetIsFireOnCooldown() const;
+	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
+	void SetIsFireOnCooldown(const bool& value);
+
+	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
 	EBasicAttackType GetBasicAttackInUse() const;
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
 	void ResetBasicAttackInUse();
@@ -362,6 +359,10 @@ public:
 	//*********************** WORLD **************************//
 	FORCEINLINE const UWorld* GetWorldPtr() const;
 
+protected:
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 /********************* PRIVATE VARIABLES *********************/
 private:
 	/***** STATS *****/
@@ -379,11 +380,13 @@ private:
 	uint8 NumOfSmallKeys;
 	bool HasBossKey;
 	/***** COMBAT *****/
+	bool IsFireOnCooldown;
 	EBasicAttackType BasicAttackInUse;
 	bool IsBasicAttackOnCooldown;
 	bool IsThrowingSomething;
 	bool IsPlayerKicking;
 	/***** TIMERS *****/
+	FTimerHandle FireTimer;
 	FTimerHandle WallHoldTimer;
 	FTimerHandle WallSlideTimer;
 	FTimerHandle LightBasicAttackTimer;
