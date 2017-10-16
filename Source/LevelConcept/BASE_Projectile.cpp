@@ -10,6 +10,10 @@ ABASE_Projectile::ABASE_Projectile(const FObjectInitializer& ObjectInitializer)
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Create a SphereComponent for projectile collider
+	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
+	CollisionComponent->InitSphereRadius(15.0f);
+	RootComponent = CollisionComponent;
 }
 
 // Called when the game starts or when spawned

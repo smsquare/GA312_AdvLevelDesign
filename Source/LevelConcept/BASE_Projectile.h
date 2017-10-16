@@ -8,7 +8,9 @@
 UCLASS()
 class LEVELCONCEPT_API ABASE_Projectile : public AActor  {
 	GENERATED_BODY()
-	
+public:
+	UPROPERTY(VisibleDefaultsOnly, Category="Projectile")
+	USphereComponent* CollisionComponent;
 public:	
 	// Sets default values for this actor's properties
 	ABASE_Projectile(const FObjectInitializer& ObjectInitializer);
@@ -20,7 +22,4 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	
-	
 };
