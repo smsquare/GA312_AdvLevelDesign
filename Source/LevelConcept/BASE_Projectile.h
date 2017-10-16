@@ -8,18 +8,24 @@
 UCLASS()
 class LEVELCONCEPT_API ABASE_Projectile : public AActor  {
 	GENERATED_BODY()
+
+// BASE VARIABLES //
 public:
 	UPROPERTY(VisibleDefaultsOnly, Category="Projectile")
-	USphereComponent* CollisionComponent;
+	USphereComponent* pCollisionComponent;
+	UPROPERTY(VisibleAnywhere, Category="Movement")
+	UProjectileMovementComponent* pProjectileMovementComponent;
+
+	UPROPERTY(EditAnywhere, Category="Info")
+	FName ProjectileName;
+
+// BASE METHODS //
 public:	
-	// Sets default values for this actor's properties
 	ABASE_Projectile(const FObjectInitializer& ObjectInitializer);
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 };

@@ -11,19 +11,30 @@ ABASE_Projectile::ABASE_Projectile(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Create a SphereComponent for projectile collider
-	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
-	CollisionComponent->InitSphereRadius(15.0f);
-	RootComponent = CollisionComponent;
+	pCollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
+	pCollisionComponent->InitSphereRadius(15.0f);
+	RootComponent = pCollisionComponent;
+
+	// Create the ProjectileMovementComponent
+	// Use this component to handle movement for the projectile
+	pProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+	pProjectileMovementComponent->SetUpdatedComponent(pCollisionComponent);
+	pProjectileMovementComponent->InitialSpeed = 500.0f;
+	pProjectileMovementComponent->MaxSpeed = 500.0f;
+	pProjectileMovementComponent->bRotationFollowsVelocity = true;
+	pProjectileMovementComponent->bShouldBounce = false;
+	pProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+	
+	// Projectile Information
+	ProjectileName = "_UNKNOWN_PROJECTILE_";
 }
 
 // Called when the game starts or when spawned
 void ABASE_Projectile::BeginPlay() {
-	Super::BeginPlay();
-	
+	Super::BeginPlay();	
 }
 
 // Called every frame
 void ABASE_Projectile::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-
 }
