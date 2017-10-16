@@ -6,6 +6,7 @@ ABASE_Projectile::ABASE_Projectile() {
  	PrimaryActorTick.bCanEverTick = true;
 
 	ProjectileName = "_UNKNOWN_PROJECTILE_";
+	ProjectileDamage = 1.0f;
 	ProjectileLifeSpan = 3.0f;
 	ProjectileRateOfFire = 1.0f;
 

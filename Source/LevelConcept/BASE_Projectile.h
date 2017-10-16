@@ -12,6 +12,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Info")
 	FName ProjectileName;
 	UPROPERTY(EditAnywhere, Category = "Info")
+	float ProjectileDamage;
+	UPROPERTY(EditAnywhere, Category = "Info")
 	float ProjectileLifeSpan; 
 	UPROPERTY(EditAnywhere, Category = "Info")
 	float ProjectileRateOfFire;
