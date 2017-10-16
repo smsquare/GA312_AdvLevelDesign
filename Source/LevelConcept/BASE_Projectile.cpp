@@ -2,8 +2,7 @@
 #include "BASE_Projectile.h"
 
 // Sets default values
-ABASE_Projectile::ABASE_Projectile(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer) {
+ABASE_Projectile::ABASE_Projectile() {
  	PrimaryActorTick.bCanEverTick = true;
 
 	ProjectileName = "_UNKNOWN_PROJECTILE_";

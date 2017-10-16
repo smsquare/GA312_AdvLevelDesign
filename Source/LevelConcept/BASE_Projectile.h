@@ -24,7 +24,7 @@ public:
 	UProjectileMovementComponent* pProjectileMovementComponent;
 // BASE METHODS //
 public:
-	ABASE_Projectile(const FObjectInitializer& ObjectInitializer);
+	ABASE_Projectile();
 	void LaunchProjectile(const FVector& aLaunchDirection);
 
 protected:
