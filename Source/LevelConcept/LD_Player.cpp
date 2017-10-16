@@ -3,6 +3,7 @@
 #include "LevelConcept.h"
 #include "LD_Door.h"
 #include "LD_Lever.h"
+#include "BASE_Projectile.h"
 #include "LD_Player.h"
 
 // Sets default values
@@ -389,6 +390,15 @@ void ALD_Player::DEBUG_ToggleDoubleJump() {
 /*************************************************************************
 								COMBAT
 **************************************************************************/
+void ALD_Player::Fire() {
+	if (pTypeOfProjectile) {
+		if (GEngine) GEngine->AddOnScreenDebugMessage(
+			-1, 2.0f, FColor::Cyan, 
+			"TESTING: Fire()" +
+			pTypeOfProjectile->GetDefaultObject<ABASE_Projectile>()->ProjectileName.ToString());
+	}
+}
+
 void ALD_Player::PressedLightBasicAttack() {
 	if (!IsBasicAttackOnCooldown && !GetCharacterMovement()->IsFalling()) {
 		IsBasicAttackOnCooldown = true;
