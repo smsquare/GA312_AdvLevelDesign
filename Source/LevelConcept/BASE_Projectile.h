@@ -11,11 +11,13 @@ class LEVELCONCEPT_API ABASE_Projectile : public AActor  {
 public:
 	UPROPERTY(EditAnywhere, Category = "Info")
 	FName ProjectileName;
-
+	
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float InitialSpeed;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MaxSpeed;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float ProjectileLifeSpan;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
 	USphereComponent* pCollisionComponent;

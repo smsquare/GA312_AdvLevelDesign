@@ -8,6 +8,7 @@ ABASE_Projectile::ABASE_Projectile() {
 	ProjectileName = "_UNKNOWN_PROJECTILE_";
 	InitialSpeed = 500.0f;
 	MaxSpeed = 500.0f;
+	ProjectileLifeSpan = 3.0f;
 
 	// Create a SphereComponent for projectile collider
 	pCollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
