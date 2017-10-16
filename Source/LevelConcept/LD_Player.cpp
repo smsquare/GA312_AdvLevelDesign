@@ -76,6 +76,7 @@ void ALD_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	InputComponent->BindAction("Run", IE_Released, this, &ALD_Player::SetMoveSpeedToWalk);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ALD_Player::PlayerJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ALD_Player::PlayerStopJump);
+	InputComponent->BindAction("Fire", IE_Pressed, this, &ALD_Player::Fire);
 	InputComponent->BindAction("LightBasicAttack", IE_Pressed, this, &ALD_Player::PressedLightBasicAttack);
 	InputComponent->BindAction("HeavyBasicAttack", IE_Pressed, this, &ALD_Player::PressedHeavyBasicAttack);
 	InputComponent->BindAction("Kick", IE_Pressed, this, &ALD_Player::PressedKick);
