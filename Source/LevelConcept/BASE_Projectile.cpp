@@ -1,14 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "LevelConcept.h"
 #include "BASE_Projectile.h"
-
 
 // Sets default values
 ABASE_Projectile::ABASE_Projectile(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer) {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+ 	PrimaryActorTick.bCanEverTick = true;
+
+	ProjectileName = "_UNKNOWN_PROJECTILE_";
+	InitialSpeed = 500.0f;
+	MaxSpeed = 500.0f;
 
 	// Create a SphereComponent for projectile collider
 	pCollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
@@ -19,8 +19,8 @@ ABASE_Projectile::ABASE_Projectile(const FObjectInitializer& ObjectInitializer)
 	// Use this component to handle movement for the projectile
 	pProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	pProjectileMovementComponent->SetUpdatedComponent(pCollisionComponent);
-	pProjectileMovementComponent->InitialSpeed = 500.0f;
-	pProjectileMovementComponent->MaxSpeed = 500.0f;
+	pProjectileMovementComponent->InitialSpeed = InitialSpeed;
+	pProjectileMovementComponent->MaxSpeed = MaxSpeed;
 	pProjectileMovementComponent->bRotationFollowsVelocity = true;
 	pProjectileMovementComponent->bShouldBounce = false;
 	pProjectileMovementComponent->ProjectileGravityScale = 0.0f;
@@ -28,9 +28,14 @@ ABASE_Projectile::ABASE_Projectile(const FObjectInitializer& ObjectInitializer)
 	// Lock movement along the Y-axis
 	pProjectileMovementComponent->bConstrainToPlane = true;
 	pProjectileMovementComponent->SetPlaneConstraintAxisSetting(EPlaneConstraintAxisSetting::Y);
+}
 
-	// Projectile Information
-	ProjectileName = "_UNKNOWN_PROJECTILE_";
+// 
+void ABASE_Projectile::LaunchProjectile(const FVector& aLaunchDirection) {
+	// Use the variable on the projectile instead of the movement component.
+	// This is mainly so I can change the value in the blueprint without having to recompile
+	//pProjectileMovementComponent->Velocity = aLaunchDirection * pProjectileMovementComponent->InitialSpeed;
+	pProjectileMovementComponent->Velocity = aLaunchDirection * InitialSpeed;
 }
 
 // Called when the game starts or when spawned

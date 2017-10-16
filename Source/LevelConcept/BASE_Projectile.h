@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "GameFramework/Actor.h"
@@ -11,21 +9,26 @@ class LEVELCONCEPT_API ABASE_Projectile : public AActor  {
 
 // BASE VARIABLES //
 public:
-	UPROPERTY(VisibleDefaultsOnly, Category="Projectile")
-	USphereComponent* pCollisionComponent;
-	UPROPERTY(VisibleAnywhere, Category="Movement")
-	UProjectileMovementComponent* pProjectileMovementComponent;
-
-	UPROPERTY(EditAnywhere, Category="Info")
+	UPROPERTY(EditAnywhere, Category = "Info")
 	FName ProjectileName;
 
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float InitialSpeed;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float MaxSpeed;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
+	USphereComponent* pCollisionComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Movement")
+	UProjectileMovementComponent* pProjectileMovementComponent;
 // BASE METHODS //
-public:	
+public:
 	ABASE_Projectile(const FObjectInitializer& ObjectInitializer);
+	void LaunchProjectile(const FVector& aLaunchDirection);
 
 protected:
 	virtual void BeginPlay() override;
-
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
 };
