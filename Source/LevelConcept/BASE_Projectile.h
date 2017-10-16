@@ -6,13 +6,12 @@
 #include "BASE_Projectile.generated.h"
 
 UCLASS()
-class LEVELCONCEPT_API ABASE_Projectile : public AActor
-{
+class LEVELCONCEPT_API ABASE_Projectile : public AActor  {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ABASE_Projectile();
+	ABASE_Projectile(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned
