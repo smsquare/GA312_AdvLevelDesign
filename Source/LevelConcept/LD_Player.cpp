@@ -36,6 +36,7 @@ ALD_Player::ALD_Player() {
 	UsedDoubleJump = false;
 
 	// COMBAT //
+	pTypeOfProjectile = nullptr;
 	LightBADamage = 15.0f;
 	HeavyBACooldown = 37.5f;
 	BasicAttackInUse = EBasicAttackType::NONE;
