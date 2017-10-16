@@ -376,8 +376,6 @@ void ALD_Player::Landed(const FHitResult& Hit) {
 }
 
 void ALD_Player::StartWallSlide() {
-	//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, "StartWallSlide");
-
 	ClearWallHoldTimer();
 	IsSlidingDownWall = true;
 	StartWallSlideTimer(2.0f);
@@ -406,6 +404,7 @@ void ALD_Player::Fire() {
 			-1, 2.0f, FColor::Cyan, 
 			"TESTING: Fire()" +
 			pTypeOfProjectile->GetDefaultObject<ABASE_Projectile>()->ProjectileName.ToString());
+		//TODO: Play projectile's fire sound from flyweight
 	}
 }
 

@@ -17,11 +17,11 @@ public:
 	float ProjectileLifeSpan; 
 	UPROPERTY(EditAnywhere, Category = "Info")
 	float ProjectileRateOfFire;
-	
-	UPROPERTY(EditAnywhere, Category = "Movement")
-	float InitialSpeed;
-	UPROPERTY(EditAnywhere, Category = "Movement")
-	float MaxSpeed;
+
+	UPROPERTY(EditAnywhere, Category = "Assets")
+	UStaticMeshComponent* ProjectileMesh;
+	UPROPERTY(EditAnywhere, Category = "Assets")
+	USoundCue* ProjectileFireCue;
 	
 	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
 	USphereComponent* pCollisionComponent;
@@ -34,9 +34,8 @@ public:
 	ABASE_Projectile();
 	void LaunchProjectile(const FVector& aLaunchDirection);
 
-protected:
-	virtual void BeginPlay() override;
 public:
 	virtual void Tick(float DeltaTime) override;
-
+protected:
+	virtual void BeginPlay() override;
 };
