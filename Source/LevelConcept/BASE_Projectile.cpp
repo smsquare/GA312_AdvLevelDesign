@@ -24,7 +24,11 @@ ABASE_Projectile::ABASE_Projectile(const FObjectInitializer& ObjectInitializer)
 	pProjectileMovementComponent->bRotationFollowsVelocity = true;
 	pProjectileMovementComponent->bShouldBounce = false;
 	pProjectileMovementComponent->ProjectileGravityScale = 0.0f;
-	
+
+	// Lock movement along the Y-axis
+	pProjectileMovementComponent->bConstrainToPlane = true;
+	pProjectileMovementComponent->SetPlaneConstraintAxisSetting(EPlaneConstraintAxisSetting::Y);
+
 	// Projectile Information
 	ProjectileName = "_UNKNOWN_PROJECTILE_";
 }
