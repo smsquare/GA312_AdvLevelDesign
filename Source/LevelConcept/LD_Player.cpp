@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LevelConcept.h"
+#include "LD_PlayerController.h"
 #include "LD_Door.h"
 #include "LD_Lever.h"
 #include "BASE_Projectile.h"
@@ -400,11 +401,15 @@ void ALD_Player::DEBUG_ToggleDoubleJump() {
 **************************************************************************/
 void ALD_Player::Fire() {
 	if (pTypeOfProjectile) {
-		if (GEngine) GEngine->AddOnScreenDebugMessage(
-			-1, 2.0f, FColor::Cyan, 
-			"TESTING: Fire()" +
-			pTypeOfProjectile->GetDefaultObject<ABASE_Projectile>()->ProjectileName.ToString());
-		//TODO: Play projectile's fire sound from flyweight
+		//if (GEngine) GEngine->AddOnScreenDebugMessage(
+		//	-1, 2.0f, FColor::Cyan, 
+		//	"TESTING: Fire()" +
+		//	pTypeOfProjectile->GetDefaultObject<ABASE_Projectile>()->ProjectileName.ToString());
+		ALD_PlayerController* playerController = (ALD_PlayerController*)UGameplayStatics::GetPlayerController(GetWorldPtr(), 0);
+		if (playerController) {
+			FVector fireDirection = playerController->GetPlayerAimingDirection();
+			fireDirection.Normalize();
+		}
 	}
 }
 
