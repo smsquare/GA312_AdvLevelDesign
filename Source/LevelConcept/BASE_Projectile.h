@@ -23,7 +23,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Assets")
 	USoundCue* ProjectileFireCue;
 	
-	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
+	UPROPERTY(VisibleDefaultsOnly, Category = "Info|Projectile")
 	USphereComponent* pCollisionComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "Movement")

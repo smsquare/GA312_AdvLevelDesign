@@ -400,15 +400,32 @@ void ALD_Player::DEBUG_ToggleDoubleJump() {
 								COMBAT
 **************************************************************************/
 void ALD_Player::Fire() {
+	//TODO: If not on cooldown
 	if (pTypeOfProjectile) {
-		//if (GEngine) GEngine->AddOnScreenDebugMessage(
-		//	-1, 2.0f, FColor::Cyan, 
-		//	"TESTING: Fire()" +
-		//	pTypeOfProjectile->GetDefaultObject<ABASE_Projectile>()->ProjectileName.ToString());
-		ALD_PlayerController* playerController = (ALD_PlayerController*)UGameplayStatics::GetPlayerController(GetWorldPtr(), 0);
-		if (playerController) {
-			FVector fireDirection = playerController->GetPlayerAimingDirection();
-			fireDirection.Normalize();
+		UWorld* world = GetWorld();
+		if (world) {
+			ALD_PlayerController* playerController = 
+				(ALD_PlayerController*)UGameplayStatics::GetPlayerController(GetWorldPtr(), 0);
+			if (playerController) {
+				FVector fireDirection = playerController->GetPlayerAimingDirection();
+				fireDirection.Normalize();
+				FActorSpawnParameters spawnParameters;
+				spawnParameters.Owner = this;
+				spawnParameters.Instigator = Instigator;
+				spawnParameters.SpawnCollisionHandlingOverride = 
+					ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+				// Spawn projectile
+				ABASE_Projectile* projectile = world->SpawnActor<ABASE_Projectile>(
+					(UClass*)pTypeOfProjectile, 
+					this->GetActorLocation() + playerController->playerGunLocation, 
+					fireDirection.ToOrientationRotator(), 
+					spawnParameters
+				);
+				// shoot the projectile
+				if (projectile) {
+					projectile->LaunchProjectile(fireDirection);
+				}
+			}
 		}
 	}
 }
