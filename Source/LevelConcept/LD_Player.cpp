@@ -1,8 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LevelConcept.h"
+#include "LD_PlayerController.h"
 #include "LD_Door.h"
 #include "LD_Lever.h"
+#include "BASE_Projectile.h"
 #include "LD_Player.h"
 
 // Sets default values
@@ -31,10 +33,12 @@ ALD_Player::ALD_Player() {
 	HasBossKey = false;
 
 	/***** JUMPING *****/
-	JumpStats.EnableDoubleJumping();
+	JumpStats.DisableDoubleJump();
 	UsedDoubleJump = false;
 
 	// COMBAT //
+	pTypeOfProjectile = nullptr;
+	IsFireOnCooldown = false;
 	LightBADamage = 15.0f;
 	HeavyBACooldown = 37.5f;
 	BasicAttackInUse = EBasicAttackType::NONE;
@@ -47,6 +51,13 @@ ALD_Player::ALD_Player() {
 // Called when the game starts or when spawned
 void ALD_Player::BeginPlay() {
 	Super::BeginPlay();	
+}
+
+void ALD_Player::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
+
+	// Clear ALL timers on this object.
+	GetWorldPtr()->GetTimerManager().ClearAllTimersForObject(this);	
 }
 
 // Called every frame
@@ -75,11 +86,13 @@ void ALD_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	InputComponent->BindAction("Run", IE_Released, this, &ALD_Player::SetMoveSpeedToWalk);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ALD_Player::PlayerJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ALD_Player::PlayerStopJump);
+	InputComponent->BindAction("Fire", IE_Pressed, this, &ALD_Player::Fire);
 	InputComponent->BindAction("LightBasicAttack", IE_Pressed, this, &ALD_Player::PressedLightBasicAttack);
 	InputComponent->BindAction("HeavyBasicAttack", IE_Pressed, this, &ALD_Player::PressedHeavyBasicAttack);
 	InputComponent->BindAction("Kick", IE_Pressed, this, &ALD_Player::PressedKick);
 	InputComponent->BindAction("Interact", IE_Pressed, this, &ALD_Player::OpenDoor);
 	InputComponent->BindAction("Interact", IE_Pressed, this, &ALD_Player::PushLever);
+	InputComponent->BindAction("DEBUG_ToggleDoubleJump", IE_Pressed, this, &ALD_Player::DEBUG_ToggleDoubleJump);
 }
 
 void ALD_Player::DamagePlayer(float amount) {
@@ -229,10 +242,8 @@ FDetectWallHitInfo ALD_Player::DetectWall() {
 	// Create local varialbes to be used in SphereTrace
 	// Start at player feet
 	FVector PlayerLocation = GetActorLocation();
-	//FVector EndLocation = PlayerLocation + (100 * GetActorUpVector());
-	FVector StartLocation = PlayerLocation + (-35 * GetActorUpVector());
-	//FVector EndLocation = PlayerLocation + (25 * GetActorForwardVector());
-	FVector EndLocation = StartLocation + (25 * GetActorForwardVector());
+	FVector StartLocation = PlayerLocation + (-35 * GetActorUpVector()) + (-25 * FVector(1.0, 0.0, 0.0));
+	FVector EndLocation = StartLocation + (50 * FVector(1.0, 0.0, 0.0));
 
 	// radius of the sphere to trace
 	float Radius = 25;
@@ -292,6 +303,7 @@ void ALD_Player::PlayerJump() {
 			// If you can jump off a wall do it
 			if (WallHitInfo.GetCanJump()) {
 				// Set movement mode to allow user to hang on / slide on wall
+				GetCharacterMovement()->StopMovementImmediately();
 				GetCharacterMovement()->SetMovementMode(MOVE_Custom, (uint8)ECustomMovementType::CMT_WallSlide);
 				JumpStats.SetHangingOnWall(true);
 				JumpStats.SetWallOnPlayerSide(WallHitInfo.GetWallDirection());
@@ -331,15 +343,16 @@ void ALD_Player::PlayerStopJump() {
 	// If you are hanging on a wall, jump off
 	if (JumpStats.GetHangingOnWall()) {
 		// Multiply JumpStats.GetWallOnPlayerSide into the y value for it to launch in the proper direction
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
 		GetCharacterMovement()->AddImpulse(
 			FVector(
-				-1 * JumpStats.GetWallOnPlayerSide() * JumpStats.JumpPower * 0.5, // -1 is for making sure you apply jump in the proper direction, inverts GetWallOnPlayerSide()
+				-1 * JumpStats.GetWallOnPlayerSide() * JumpStats.JumpPower, // -1 is for making sure you apply jump in the proper direction, inverts GetWallOnPlayerSide()
 				0.0f,
 				JumpStats.JumpPower * ROOT_THREE_OVER_TWO
 			),
 			true 
 		);
-		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
+		
 		JumpStats.SetFallOffPointTouched(false);
 		JumpStats.SetHangingOnWall(false);
 		IsSlidingDownWall = false;
@@ -364,8 +377,6 @@ void ALD_Player::Landed(const FHitResult& Hit) {
 }
 
 void ALD_Player::StartWallSlide() {
-	//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, "StartWallSlide");
-
 	ClearWallHoldTimer();
 	IsSlidingDownWall = true;
 	StartWallSlideTimer(2.0f);
@@ -379,9 +390,46 @@ void ALD_Player::FallOffWall() {
 	ClearWallSlideTimer();
 }
 
+void ALD_Player::DEBUG_ToggleDoubleJump() {
+	JumpStats.GetDoubleJumpEnabled() ? 
+		JumpStats.DisableDoubleJump() :
+		JumpStats.EnableDoubleJump();
+}
+
 /*************************************************************************
 								COMBAT
 **************************************************************************/
+void ALD_Player::Fire() {
+	//TODO: If not on cooldown
+	if (pTypeOfProjectile) {
+		UWorld* world = GetWorld();
+		if (world) {
+			ALD_PlayerController* playerController = 
+				(ALD_PlayerController*)UGameplayStatics::GetPlayerController(GetWorldPtr(), 0);
+			if (playerController) {
+				FVector fireDirection = playerController->GetPlayerAimingDirection();
+				fireDirection.Normalize();
+				FActorSpawnParameters spawnParameters;
+				spawnParameters.Owner = this;
+				spawnParameters.Instigator = Instigator;
+				spawnParameters.SpawnCollisionHandlingOverride = 
+					ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+				// Spawn projectile
+				ABASE_Projectile* projectile = world->SpawnActor<ABASE_Projectile>(
+					(UClass*)pTypeOfProjectile, 
+					this->GetActorLocation() + playerController->playerGunLocation, 
+					fireDirection.ToOrientationRotator(), 
+					spawnParameters
+				);
+				// shoot the projectile
+				if (projectile) {
+					projectile->LaunchProjectile(fireDirection);
+				}
+			}
+		}
+	}
+}
+
 void ALD_Player::PressedLightBasicAttack() {
 	if (!IsBasicAttackOnCooldown && !GetCharacterMovement()->IsFalling()) {
 		IsBasicAttackOnCooldown = true;
@@ -402,6 +450,14 @@ void ALD_Player::PressedKick() {
 	if (!GetCharacterMovement()->IsFalling()) {
 		IsPlayerKicking = true;
 	}
+}
+
+bool ALD_Player::GetIsFireOnCooldown() const {
+	return IsFireOnCooldown;
+}
+
+void ALD_Player::SetIsFireOnCooldown(const bool& value) {
+	IsFireOnCooldown = value;
 }
 
 EBasicAttackType ALD_Player::GetBasicAttackInUse() const {

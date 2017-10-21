@@ -24,6 +24,7 @@ ALD_Wall::ALD_Wall() {
 	RootComponent = WallMesh;
 
 	FallOffPoint = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Fall Off Point"));
+	FallOffPoint->SetCollisionProfileName(FName("FallOffPoint"));
 	FallOffPoint->AttachToComponent(WallMesh, FAttachmentTransformRules::KeepWorldTransform);
 	FallOffPoint->OnComponentBeginOverlap.AddDynamic(this, &ALD_Wall::FallOffDetection);
 	FallOffPoint->OnComponentEndOverlap.AddDynamic(this, &ALD_Wall::FallOffEndOverlap);
