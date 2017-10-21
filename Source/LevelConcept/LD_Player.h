@@ -219,10 +219,12 @@ enum class EBasicAttackType : uint8 {
 };
 
 UCLASS()
-class LEVELCONCEPT_API ALD_Player : public ACharacter
-{
+class LEVELCONCEPT_API ALD_Player : public ACharacter {
 	GENERATED_BODY()
-/********************* PUBLIC VARIABLES *********************/
+
+/********************* 
+	PUBLIC VARIABLES 
+*********************/
 public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Stats")
@@ -250,25 +252,22 @@ public:
 	float LightBACooldown; 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Cooldowns")
 	float HeavyBACooldown;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Projectile")
+	TSubclassOf<class ABASE_Projectile> pTypeOfProjectile;
 
 	//----------------------- INTERACT -------------------------//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interact|Levers")
 	uint8 NumLeversLeft;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interact|Levers")
 	bool NearLever;
-	/********************* PUBLIC METHODS *********************/
+
+/********************* 
+	PUBLIC METHODS
+*********************/
 public:
-	
-	// Sets default values for this character's properties
 	ALD_Player();
-	//TODO: AKOA_PROTO_Character(const FObjectInitializer& ObjectInitializer);
-	virtual void BeginPlay() override;
 	virtual void Tick( float DeltaSeconds ) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	/****** TICK ******/
-	//TODO: IMPLEMENT TICK 
-	//virtual void Tick(float DeltaSeconds) override;
 
 	//******************** PLAYER STATS ************************//
 	UFUNCTION(BlueprintCallable, Category = "Player|Stats|HP")
@@ -283,6 +282,7 @@ public:
 	bool DidHealthUpgrade() const ;
 	UFUNCTION(BlueprintCallable, Category = "Player|Stats|HP")
 	void ResetIsHealthUpgraded();
+
 	//********************** MOVEMENT **************************//
 	void SetMoveSpeedToRun();
 	void SetMoveSpeedToWalk();
@@ -291,19 +291,20 @@ public:
 	FORCEINLINE bool GetIsMovementInputDisabled() const;
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void SetIsMovementInputDisabled(bool isDisabled);
+
 	//********************** INTERACT *************************//
 	void PushLever();
+	UFUNCTION(BlueprintCallable, Category = "Interact|Door")
+	void OpenDoor();
+
 	//********************** INVENTORY *************************//
 	UFUNCTION(BlueprintCallable, Category = "Inventory|Keys")
 	void PickupSmallKey();
 	UFUNCTION(BlueprintCallable, Category = "Inventory|Keys")
 	uint8 GetNumOfSmallKeys() const;
-
 	//TODO: PickupBossKey();
 	//TODO: GetHasBossKey();
-	//*********************** INTERACT **************************//
-	UFUNCTION(BlueprintCallable, Category = "Interact|Door")
-	void OpenDoor();
+	
 	//*********************** JUMPING **************************//
 	FDetectWallHitInfo DetectWall();
 	void PlayerJump();
@@ -317,10 +318,17 @@ public:
 	void FallOffWall();
 	/* DEBUG FUNCTIONS FOR JUMPING */
 	void DEBUG_ToggleDoubleJump();
+
 	//*********************** COMBAT **************************//
+	void Fire();
 	void PressedLightBasicAttack();
 	void PressedHeavyBasicAttack();
 	void PressedKick();
+	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
+	bool GetIsFireOnCooldown() const;
+	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
+	void SetIsFireOnCooldown(const bool& value);
+
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
 	EBasicAttackType GetBasicAttackInUse() const;
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
@@ -335,6 +343,7 @@ public:
 	void ResetIsPlayerKicking();
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
 	void UpgradeLBasicDamage(float amount);
+
 	//*********************** TIMERS **************************//
 	void StartWallHoldTimer(const float& duration);
 	void StartWallSlideTimer(const float& duration);
@@ -349,6 +358,10 @@ public:
 	void ClearHeavyBasicAttackTimer();
 	//*********************** WORLD **************************//
 	FORCEINLINE const UWorld* GetWorldPtr() const;
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 /********************* PRIVATE VARIABLES *********************/
 private:
@@ -367,11 +380,13 @@ private:
 	uint8 NumOfSmallKeys;
 	bool HasBossKey;
 	/***** COMBAT *****/
+	bool IsFireOnCooldown;
 	EBasicAttackType BasicAttackInUse;
 	bool IsBasicAttackOnCooldown;
 	bool IsThrowingSomething;
 	bool IsPlayerKicking;
 	/***** TIMERS *****/
+	FTimerHandle FireTimer;
 	FTimerHandle WallHoldTimer;
 	FTimerHandle WallSlideTimer;
 	FTimerHandle LightBasicAttackTimer;
