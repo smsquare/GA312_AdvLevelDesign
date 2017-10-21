@@ -13,6 +13,7 @@ ABASE_Projectile::ABASE_Projectile() {
 	// Create a SphereComponent for projectile collider
 	pCollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	pCollisionComponent->InitSphereRadius(15.0f);
+	pCollisionComponent->SetCollisionProfileName(FName("PlayerProjectile"));
 	RootComponent = pCollisionComponent;
 	// Mesh of the actual projectile
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
