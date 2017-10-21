@@ -53,7 +53,7 @@ public:
 	class UInstancedStaticMeshComponent* WallMesh;
 
 	// Capsule to be placed in the scene for the location the player should fall off the wall.
-	UPROPERTY(EditInstanceOnly, BlueprintReadonly, Category = "Fall Off Point")
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Fall Off Point")
 	class UCapsuleComponent* FallOffPoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
