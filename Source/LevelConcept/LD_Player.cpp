@@ -2,6 +2,7 @@
 
 #include "LevelConcept.h"
 #include "LD_PlayerController.h"
+#include "BASE_EnemyCharacter.h"
 #include "LD_Door.h"
 #include "LD_Lever.h"
 #include "BASE_Projectile.h"
@@ -11,7 +12,7 @@
 ALD_Player::ALD_Player() {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+		
 	/***** STATS *****/
 	IsDead = false;
 	HealthCurrent = 75.0f;
@@ -20,14 +21,30 @@ ALD_Player::ALD_Player() {
 	/***** MOVEMENT *****/
 	IsMovementInputDisabled = false;
 	IsRunDisabled = true;
+
 	WalkSpeed = 450.0f;
 	RunSpeed = 900.0f;
+
+	IsDashEnabled = false;
+	DashDistance = 500.0f;
+	DashSpeed = 500.0f;
+	DashDamage = 24.0f;
+	MostRecentInputDir = 1;
+	LocationToDash = 0.0f;
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ALD_Player::DashHitEnemy);
+	//TODO: REMOVE UPON COMPLETION OF THE DASH ///////////////////////////////////////////////////////////////
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	CanDodge = false;
 	IsSlidingDownWall = false;
+	IsDashing = false;
+	IsDashOnCooldown = false;
 
 	/***** INTERACT *****/
 	NumLeversLeft = 0;
 	NearLever = false;
+
 	/***** INVENTORY *****/
 	NumOfSmallKeys = 0;
 	HasBossKey = false;
@@ -63,6 +80,32 @@ void ALD_Player::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 // Called every frame
 void ALD_Player::Tick( float DeltaTime ) {
 	Super::Tick( DeltaTime );
+	if (IsDashing) {		
+		FVector location = GetActorLocation();
+		float distance = MostRecentInputDir * DashSpeed * DeltaTime;
+		location.X = location.X + distance;
+		
+		// If dashing to the left
+		if (MostRecentInputDir < 0) {
+			if (location.X < LocationToDash) {
+				location.X = LocationToDash;
+				ResetDash();
+			}
+		} else {
+			if (location.X > LocationToDash) {
+				location.X = LocationToDash;
+				ResetDash();
+			}
+		}
+
+		FHitResult outSweepHitResult;
+		bool successfulMove = SetActorLocation(location, true, &outSweepHitResult);
+		if (!successfulMove) {
+			ResetDash();
+			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "SetActorLocation sweeping failed while dashing!");
+		}
+	}
+
 	if (IsSlidingDownWall) {
 		FVector playerLocation = GetActorLocation();
 		JumpStats.ApplyWallSlideAcceleration(DeltaTime);
@@ -86,6 +129,9 @@ void ALD_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	InputComponent->BindAction("Run", IE_Released, this, &ALD_Player::SetMoveSpeedToWalk);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ALD_Player::PlayerJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ALD_Player::PlayerStopJump);
+	InputComponent->BindAction("Dash", IE_Pressed, this, &ALD_Player::PlayerDash);
+	InputComponent->BindAction("DirInputLeft", IE_Pressed, this, &ALD_Player::SetInputDirLeft);
+	InputComponent->BindAction("DirInputRight", IE_Pressed, this, &ALD_Player::SetInputDirRight);
 	InputComponent->BindAction("Fire", IE_Pressed, this, &ALD_Player::Fire);
 	InputComponent->BindAction("LightBasicAttack", IE_Pressed, this, &ALD_Player::PressedLightBasicAttack);
 	InputComponent->BindAction("HeavyBasicAttack", IE_Pressed, this, &ALD_Player::PressedHeavyBasicAttack);
@@ -93,6 +139,7 @@ void ALD_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	InputComponent->BindAction("Interact", IE_Pressed, this, &ALD_Player::OpenDoor);
 	InputComponent->BindAction("Interact", IE_Pressed, this, &ALD_Player::PushLever);
 	InputComponent->BindAction("DEBUG_ToggleDoubleJump", IE_Pressed, this, &ALD_Player::DEBUG_ToggleDoubleJump);
+	InputComponent->BindAction("DEBUG_ToggleDash", IE_Pressed, this, &ALD_Player::DEBUG_ToggleDash);
 }
 
 void ALD_Player::DamagePlayer(float amount) {
@@ -145,6 +192,55 @@ void ALD_Player::MoveRight(float Amount) {
 	// Only move if the controller is set up, Amount is not 0, MovementInput not disabled
 	if (Controller && Amount && GetIsMovementInputDisabled() == false) {
 		AddMovementInput(FVector(1.0, 0.0, 0.0), Amount);
+	}
+}
+
+void ALD_Player::PlayerDash() {
+	if (IsDashEnabled && !IsDashOnCooldown) {
+		GetCharacterMovement()->SetMovementMode(MOVE_Custom, (uint8)ECustomMovementType::CMT_Dash);
+		IsDashing = true;
+		IsDashOnCooldown = true;
+		SetIsMovementInputDisabled(true);
+		LocationToDash = GetActorLocation().X + (DashDistance * MostRecentInputDir);
+		GetCapsuleComponent()->SetCollisionProfileName(FName("Dashing"));
+	}
+}
+
+void ALD_Player::DashHitEnemy(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
+	ABASE_EnemyCharacter* enemy = Cast<ABASE_EnemyCharacter>(OtherActor);
+	if (enemy) {
+		enemy->EnemyRecieveDamage(DashDamage);
+	}
+}
+bool ALD_Player::GetIsDashing() const {
+	return IsDashing;
+}
+void ALD_Player::ResetDash() {
+	IsDashing = false;
+	IsDashOnCooldown = false;
+	SetIsMovementInputDisabled(false);
+	GetCapsuleComponent()->SetCollisionProfileName(FName("Player"));
+	if (GetCharacterMovement()->IsFalling()) {
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
+	} else {
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	}	
+}
+
+void ALD_Player::DEBUG_ToggleDash() {
+	(IsDashEnabled == true) ? IsDashEnabled = false : IsDashEnabled = true;
+}
+
+
+void ALD_Player::SetInputDirLeft() {
+	if (GetIsMovementInputDisabled() == false) {
+		MostRecentInputDir = -1;
+	}
+}
+
+void ALD_Player::SetInputDirRight() {
+	if (GetIsMovementInputDisabled() == false) {
+		MostRecentInputDir = 1;
 	}
 }
 

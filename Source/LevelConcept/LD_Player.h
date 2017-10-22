@@ -8,7 +8,8 @@
 
 UENUM(BlueprintType)
 enum class ECustomMovementType : uint8 {
-	CMT_WallSlide = 0 UMETA(DisplayName = "Wall Slide")
+	CMT_WallSlide = 0	UMETA(DisplayName = "Wall Slide"),
+	CMT_Dash			UMETA(DisplayName = "Player Dash")
 };
 
 USTRUCT() 
@@ -226,22 +227,35 @@ class LEVELCONCEPT_API ALD_Player : public ACharacter {
 	PUBLIC VARIABLES 
 *********************/
 public:
-	
+	UPROPERTY(EditAnywhere, Category = "Root")
+	UCapsuleComponent* RootCapsule;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Stats")
 	float HealthCurrent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Stats")
 	float HealthMax;
 
 	//----------------------- MOVEMENT -------------------------//
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Movement")
 	float WalkSpeed;	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Movement")
 	float RunSpeed;
 
+	// Distance to cover during Dash
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Dash")
+	float DashDistance;
+	// Speed of the Dash. Distance / Second
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Dash")
+	float DashSpeed;
+	// Damage the Dash does to enemies
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Dash")
+	float DashDamage;
+
 	UPROPERTY(EditAnywhere, Category = "Player|Jump")
 	FJumpVariables JumpStats;
 
-	//TODO:IMPLEMENT STATUS EFFECTS
 
 	//----------------------- COMBAT -------------------------//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
@@ -287,6 +301,14 @@ public:
 	void SetMoveSpeedToRun();
 	void SetMoveSpeedToWalk();
 	void MoveRight(float Amount);
+	void PlayerDash();
+	UFUNCTION(Category = "Dash")
+	void DashHitEnemy(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION(BlueprintCallable, Category = "Dash")
+	FORCEINLINE bool GetIsDashing() const;
+	void ResetDash();
+	/* DEBUG FUNCTIONS FOR JUMPING */
+	void DEBUG_ToggleDash();
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	FORCEINLINE bool GetIsMovementInputDisabled() const;
 	UFUNCTION(BlueprintCallable, Category = "Movement")
@@ -372,7 +394,12 @@ private:
 	bool CanDodge;
 	bool IsMovementInputDisabled;
 	bool IsRunDisabled;
-	bool IsSlidingDownWall;	
+	bool IsSlidingDownWall;
+	int8 MostRecentInputDir;
+	bool IsDashEnabled;
+	float LocationToDash;
+	bool IsDashing;
+	bool IsDashOnCooldown;
 	// This is passed to the ANIMBP so it can preform the jump anim again.
 	// Put here so I can make the accessors BlueprintCallable
 	bool UsedDoubleJump;
@@ -386,6 +413,7 @@ private:
 	bool IsThrowingSomething;
 	bool IsPlayerKicking;
 	/***** TIMERS *****/
+	FTimerHandle DashCooldownTimer;
 	FTimerHandle FireTimer;
 	FTimerHandle WallHoldTimer;
 	FTimerHandle WallSlideTimer;
@@ -395,5 +423,7 @@ private:
 	const UWorld* WorldPtr;
 /********************* PRIVATE METHODS *********************/
 private:
+	void SetInputDirLeft();
+	void SetInputDirRight();
 	void OnDeath();
 };
