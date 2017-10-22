@@ -307,6 +307,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Dash")
 	FORCEINLINE bool GetIsDashing() const;
 	void ResetDash();
+	/* DEBUG FUNCTIONS FOR JUMPING */
+	void DEBUG_ToggleDash();
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	FORCEINLINE bool GetIsMovementInputDisabled() const;
 	UFUNCTION(BlueprintCallable, Category = "Movement")
@@ -394,6 +396,7 @@ private:
 	bool IsRunDisabled;
 	bool IsSlidingDownWall;
 	int8 MostRecentInputDir;
+	bool IsDashEnabled;
 	float LocationToDash;
 	bool IsDashing;
 	bool IsDashOnCooldown;

@@ -25,6 +25,7 @@ ALD_Player::ALD_Player() {
 	WalkSpeed = 450.0f;
 	RunSpeed = 900.0f;
 
+	IsDashEnabled = false;
 	DashDistance = 500.0f;
 	DashSpeed = 500.0f;
 	DashDamage = 24.0f;
@@ -138,6 +139,7 @@ void ALD_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	InputComponent->BindAction("Interact", IE_Pressed, this, &ALD_Player::OpenDoor);
 	InputComponent->BindAction("Interact", IE_Pressed, this, &ALD_Player::PushLever);
 	InputComponent->BindAction("DEBUG_ToggleDoubleJump", IE_Pressed, this, &ALD_Player::DEBUG_ToggleDoubleJump);
+	InputComponent->BindAction("DEBUG_ToggleDash", IE_Pressed, this, &ALD_Player::DEBUG_ToggleDash);
 }
 
 void ALD_Player::DamagePlayer(float amount) {
@@ -194,7 +196,7 @@ void ALD_Player::MoveRight(float Amount) {
 }
 
 void ALD_Player::PlayerDash() {
-	if (!IsDashOnCooldown) {
+	if (IsDashEnabled && !IsDashOnCooldown) {
 		GetCharacterMovement()->SetMovementMode(MOVE_Custom, (uint8)ECustomMovementType::CMT_Dash);
 		IsDashing = true;
 		IsDashOnCooldown = true;
@@ -220,11 +222,13 @@ void ALD_Player::ResetDash() {
 	GetCapsuleComponent()->SetCollisionProfileName(FName("Player"));
 	if (GetCharacterMovement()->IsFalling()) {
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
-	}
-	else {
+	} else {
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-	}
-	
+	}	
+}
+
+void ALD_Player::DEBUG_ToggleDash() {
+	(IsDashEnabled == true) ? IsDashEnabled = false : IsDashEnabled = true;
 }
 
 
