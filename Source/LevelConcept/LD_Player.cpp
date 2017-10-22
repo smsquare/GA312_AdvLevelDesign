@@ -25,6 +25,7 @@ ALD_Player::ALD_Player() {
 	CanDodge = false;
 	IsSlidingDownWall = false;
 	IsDashing = false;
+	IsDashOnCooldown = false;
 
 	/***** INTERACT *****/
 	NumLeversLeft = 0;
@@ -64,6 +65,10 @@ void ALD_Player::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 // Called every frame
 void ALD_Player::Tick( float DeltaTime ) {
 	Super::Tick( DeltaTime );
+	if (IsDashing) {
+		
+	}
+
 	if (IsSlidingDownWall) {
 		FVector playerLocation = GetActorLocation();
 		JumpStats.ApplyWallSlideAcceleration(DeltaTime);
@@ -151,7 +156,11 @@ void ALD_Player::MoveRight(float Amount) {
 }
 
 void ALD_Player::PlayerDash() {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "Player pressed dash");
+	if (!IsDashOnCooldown) {
+		IsDashing = true;
+		IsDashOnCooldown = true;
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Cyan, "IsDashing!");
+	}
 }
 
 bool ALD_Player::GetIsMovementInputDisabled() const {

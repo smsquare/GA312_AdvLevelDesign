@@ -374,6 +374,7 @@ private:
 	bool IsRunDisabled;
 	bool IsSlidingDownWall;
 	bool IsDashing;
+	bool IsDashOnCooldown;
 	// This is passed to the ANIMBP so it can preform the jump anim again.
 	// Put here so I can make the accessors BlueprintCallable
 	bool UsedDoubleJump;
@@ -387,6 +388,7 @@ private:
 	bool IsThrowingSomething;
 	bool IsPlayerKicking;
 	/***** TIMERS *****/
+	FTimerHandle DashCooldownTimer;
 	FTimerHandle FireTimer;
 	FTimerHandle WallHoldTimer;
 	FTimerHandle WallSlideTimer;
