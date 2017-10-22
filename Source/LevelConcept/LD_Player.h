@@ -233,10 +233,17 @@ public:
 	float HealthMax;
 
 	//----------------------- MOVEMENT -------------------------//
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Movement")
 	float WalkSpeed;	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Movement")
 	float RunSpeed;
+	// Distance to cover during dash
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Dash")
+	float DashDistance;
+	// Speed of the Dash. Distance / Second
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Dash")
+	float DashSpeed;
 
 	UPROPERTY(EditAnywhere, Category = "Player|Jump")
 	FJumpVariables JumpStats;

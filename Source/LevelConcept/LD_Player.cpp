@@ -20,8 +20,13 @@ ALD_Player::ALD_Player() {
 	/***** MOVEMENT *****/
 	IsMovementInputDisabled = false;
 	IsRunDisabled = true;
+
 	WalkSpeed = 450.0f;
 	RunSpeed = 900.0f;
+
+	DashDistance = 500.0f;
+	DashSpeed = 500.0f;
+
 	CanDodge = false;
 	IsSlidingDownWall = false;
 	IsDashing = false;
@@ -30,6 +35,7 @@ ALD_Player::ALD_Player() {
 	/***** INTERACT *****/
 	NumLeversLeft = 0;
 	NearLever = false;
+
 	/***** INVENTORY *****/
 	NumOfSmallKeys = 0;
 	HasBossKey = false;
