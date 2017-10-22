@@ -8,7 +8,8 @@
 
 UENUM(BlueprintType)
 enum class ECustomMovementType : uint8 {
-	CMT_WallSlide = 0 UMETA(DisplayName = "Wall Slide")
+	CMT_WallSlide = 0	UMETA(DisplayName = "Wall Slide"),
+	CMT_Dash			UMETA(DisplayName = "Player Dash")
 };
 
 USTRUCT() 
@@ -226,7 +227,10 @@ class LEVELCONCEPT_API ALD_Player : public ACharacter {
 	PUBLIC VARIABLES 
 *********************/
 public:
-	
+	UPROPERTY(EditAnywhere, Category = "Root")
+	UCapsuleComponent* RootCapsule;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Stats")
 	float HealthCurrent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Stats")
@@ -238,6 +242,7 @@ public:
 	float WalkSpeed;	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Movement")
 	float RunSpeed;
+
 	// Distance to cover during dash
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Dash")
 	float DashDistance;
@@ -245,18 +250,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Dash")
 	float DashSpeed;
 
-	/****************************************************************
-	*				TEMP VARIABLES TO DEBUG DASH					*/
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Dash")
-	
-	
-	/*				REMOVE FROM FINAL BUILD							*	
-	/****************************************************************/
-
 	UPROPERTY(EditAnywhere, Category = "Player|Jump")
 	FJumpVariables JumpStats;
 
-	//TODO:IMPLEMENT STATUS EFFECTS
 
 	//----------------------- COMBAT -------------------------//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
@@ -303,6 +299,7 @@ public:
 	void SetMoveSpeedToWalk();
 	void MoveRight(float Amount);
 	void PlayerDash();
+	void ResetDash();
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	FORCEINLINE bool GetIsMovementInputDisabled() const;
 	UFUNCTION(BlueprintCallable, Category = "Movement")
@@ -390,6 +387,7 @@ private:
 	bool IsRunDisabled;
 	bool IsSlidingDownWall;
 	int8 MostRecentInputDir;
+	float LocationToDash;
 	bool IsDashing;
 	bool IsDashOnCooldown;
 	// This is passed to the ANIMBP so it can preform the jump anim again.

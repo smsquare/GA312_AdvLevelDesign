@@ -11,7 +11,7 @@
 ALD_Player::ALD_Player() {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+		
 	/***** STATS *****/
 	IsDead = false;
 	HealthCurrent = 75.0f;
@@ -24,7 +24,9 @@ ALD_Player::ALD_Player() {
 	WalkSpeed = 450.0f;
 	RunSpeed = 900.0f;
 
-	MostRecentInputDir = 0;
+	MostRecentInputDir = 1;
+
+	LocationToDash = 0.0f;
 	DashDistance = 500.0f;
 	DashSpeed = 500.0f;
 	//TODO: REMOVE UPON COMPLETION OF THE DASH ///////////////////////////////////////////////////////////////
@@ -75,8 +77,30 @@ void ALD_Player::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 // Called every frame
 void ALD_Player::Tick( float DeltaTime ) {
 	Super::Tick( DeltaTime );
-	if (IsDashing) {
+	if (IsDashing) {		
+		FVector location = GetActorLocation();
+		float distance = MostRecentInputDir * DashSpeed * DeltaTime;
+		location.X = location.X + distance;
 		
+		// If dashing to the left
+		if (MostRecentInputDir < 0) {
+			if (location.X < LocationToDash) {
+				location.X = LocationToDash;
+				ResetDash();
+			}
+		} else {
+			if (location.X > LocationToDash) {
+				location.X = LocationToDash;
+				ResetDash();
+			}
+		}
+
+		FHitResult outSweepHitResult;
+		bool successfulMove = SetActorLocation(location, true, &outSweepHitResult);
+		if (!successfulMove) {
+			ResetDash();
+			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "SetActorLocation sweeping failed while dashing!");
+		}
 	}
 
 	if (IsSlidingDownWall) {
@@ -168,31 +192,41 @@ void ALD_Player::MoveRight(float Amount) {
 }
 
 void ALD_Player::PlayerDash() {
-	DrawDebugCapsule(
-		GetWorldPtr(),
-		GetActorLocation()+(DashDistance * MostRecentInputDir * FVector(1.0f,0.0f,0.0f)),
-		88.0f, 25.0f,
-		GetActorRotation().Quaternion(),
-		FColor::Cyan,
-		false,
-		2.0f,
-		0,
-		3.0f
-	);
-
 	if (!IsDashOnCooldown) {
+		GetCharacterMovement()->SetMovementMode(MOVE_Custom, (uint8)ECustomMovementType::CMT_Dash);
 		IsDashing = true;
 		IsDashOnCooldown = true;
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Cyan, "IsDashing!");
+		SetIsMovementInputDisabled(true);
+		LocationToDash = GetActorLocation().X + (DashDistance * MostRecentInputDir);
+		GetCapsuleComponent()->SetCollisionProfileName(FName("Dashing"));
 	}
 }
 
+void ALD_Player::ResetDash() {
+	IsDashing = false;
+	IsDashOnCooldown = false;
+	SetIsMovementInputDisabled(false);
+	GetCapsuleComponent()->SetCollisionProfileName(FName("Player"));
+	if (GetCharacterMovement()->IsFalling()) {
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
+	}
+	else {
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	}
+	
+}
+
+
 void ALD_Player::SetInputDirLeft() {
-	MostRecentInputDir = -1;
+	if (GetIsMovementInputDisabled() == false) {
+		MostRecentInputDir = -1;
+	}
 }
 
 void ALD_Player::SetInputDirRight() {
-	MostRecentInputDir = 1;
+	if (GetIsMovementInputDisabled() == false) {
+		MostRecentInputDir = 1;
+	}
 }
 
 bool ALD_Player::GetIsMovementInputDisabled() const {
