@@ -24,8 +24,12 @@ ALD_Player::ALD_Player() {
 	WalkSpeed = 450.0f;
 	RunSpeed = 900.0f;
 
+	MostRecentInputDir = 0;
 	DashDistance = 500.0f;
 	DashSpeed = 500.0f;
+	//TODO: REMOVE UPON COMPLETION OF THE DASH ///////////////////////////////////////////////////////////////
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	CanDodge = false;
 	IsSlidingDownWall = false;
@@ -99,6 +103,8 @@ void ALD_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ALD_Player::PlayerJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ALD_Player::PlayerStopJump);
 	InputComponent->BindAction("Dash", IE_Pressed, this, &ALD_Player::PlayerDash);
+	InputComponent->BindAction("DirInputLeft", IE_Pressed, this, &ALD_Player::SetInputDirLeft);
+	InputComponent->BindAction("DirInputRight", IE_Pressed, this, &ALD_Player::SetInputDirRight);
 	InputComponent->BindAction("Fire", IE_Pressed, this, &ALD_Player::Fire);
 	InputComponent->BindAction("LightBasicAttack", IE_Pressed, this, &ALD_Player::PressedLightBasicAttack);
 	InputComponent->BindAction("HeavyBasicAttack", IE_Pressed, this, &ALD_Player::PressedHeavyBasicAttack);
@@ -162,11 +168,31 @@ void ALD_Player::MoveRight(float Amount) {
 }
 
 void ALD_Player::PlayerDash() {
+	DrawDebugCapsule(
+		GetWorldPtr(),
+		GetActorLocation()+(DashDistance * MostRecentInputDir * FVector(1.0f,0.0f,0.0f)),
+		88.0f, 25.0f,
+		GetActorRotation().Quaternion(),
+		FColor::Cyan,
+		false,
+		2.0f,
+		0,
+		3.0f
+	);
+
 	if (!IsDashOnCooldown) {
 		IsDashing = true;
 		IsDashOnCooldown = true;
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Cyan, "IsDashing!");
 	}
+}
+
+void ALD_Player::SetInputDirLeft() {
+	MostRecentInputDir = -1;
+}
+
+void ALD_Player::SetInputDirRight() {
+	MostRecentInputDir = 1;
 }
 
 bool ALD_Player::GetIsMovementInputDisabled() const {

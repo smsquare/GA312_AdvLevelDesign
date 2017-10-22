@@ -245,6 +245,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Dash")
 	float DashSpeed;
 
+	/****************************************************************
+	*				TEMP VARIABLES TO DEBUG DASH					*/
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Dash")
+	
+	
+	/*				REMOVE FROM FINAL BUILD							*	
+	/****************************************************************/
+
 	UPROPERTY(EditAnywhere, Category = "Player|Jump")
 	FJumpVariables JumpStats;
 
@@ -299,6 +307,7 @@ public:
 	FORCEINLINE bool GetIsMovementInputDisabled() const;
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void SetIsMovementInputDisabled(bool isDisabled);
+
 	//********************** INTERACT *************************//
 	void PushLever();
 	UFUNCTION(BlueprintCallable, Category = "Interact|Door")
@@ -380,6 +389,7 @@ private:
 	bool IsMovementInputDisabled;
 	bool IsRunDisabled;
 	bool IsSlidingDownWall;
+	int8 MostRecentInputDir;
 	bool IsDashing;
 	bool IsDashOnCooldown;
 	// This is passed to the ANIMBP so it can preform the jump anim again.
@@ -405,5 +415,7 @@ private:
 	const UWorld* WorldPtr;
 /********************* PRIVATE METHODS *********************/
 private:
+	void SetInputDirLeft();
+	void SetInputDirRight();
 	void OnDeath();
 };
