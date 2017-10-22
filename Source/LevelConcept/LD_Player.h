@@ -287,11 +287,11 @@ public:
 	void SetMoveSpeedToRun();
 	void SetMoveSpeedToWalk();
 	void MoveRight(float Amount);
+	void PlayerDash();
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	FORCEINLINE bool GetIsMovementInputDisabled() const;
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void SetIsMovementInputDisabled(bool isDisabled);
-
 	//********************** INTERACT *************************//
 	void PushLever();
 	UFUNCTION(BlueprintCallable, Category = "Interact|Door")
@@ -372,7 +372,8 @@ private:
 	bool CanDodge;
 	bool IsMovementInputDisabled;
 	bool IsRunDisabled;
-	bool IsSlidingDownWall;	
+	bool IsSlidingDownWall;
+	bool IsDashing;
 	// This is passed to the ANIMBP so it can preform the jump anim again.
 	// Put here so I can make the accessors BlueprintCallable
 	bool UsedDoubleJump;

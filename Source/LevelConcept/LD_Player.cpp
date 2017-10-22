@@ -24,6 +24,7 @@ ALD_Player::ALD_Player() {
 	RunSpeed = 900.0f;
 	CanDodge = false;
 	IsSlidingDownWall = false;
+	IsDashing = false;
 
 	/***** INTERACT *****/
 	NumLeversLeft = 0;
@@ -86,6 +87,7 @@ void ALD_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	InputComponent->BindAction("Run", IE_Released, this, &ALD_Player::SetMoveSpeedToWalk);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ALD_Player::PlayerJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ALD_Player::PlayerStopJump);
+	InputComponent->BindAction("Dash", IE_Pressed, this, &ALD_Player::PlayerDash);
 	InputComponent->BindAction("Fire", IE_Pressed, this, &ALD_Player::Fire);
 	InputComponent->BindAction("LightBasicAttack", IE_Pressed, this, &ALD_Player::PressedLightBasicAttack);
 	InputComponent->BindAction("HeavyBasicAttack", IE_Pressed, this, &ALD_Player::PressedHeavyBasicAttack);
@@ -146,6 +148,10 @@ void ALD_Player::MoveRight(float Amount) {
 	if (Controller && Amount && GetIsMovementInputDisabled() == false) {
 		AddMovementInput(FVector(1.0, 0.0, 0.0), Amount);
 	}
+}
+
+void ALD_Player::PlayerDash() {
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "Player pressed dash");
 }
 
 bool ALD_Player::GetIsMovementInputDisabled() const {
