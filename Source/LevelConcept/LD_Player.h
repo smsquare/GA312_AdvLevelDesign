@@ -219,6 +219,13 @@ enum class EBasicAttackType : uint8 {
 	NONE = 99	UMETA(DisplayName = "None")
 };
 
+UENUM(BlueprintType)
+enum class EPlayerMovement : uint8 {
+	PM_DASH = 0		UMETA(DisplayName = "Dash"),
+	PM_WALLSLIDE	UMETA(DisplayName = "Wall Slide"),
+	PM_DEFAULT = 99 UMETA(Hidden)
+};
+
 UCLASS()
 class LEVELCONCEPT_API ALD_Player : public ACharacter {
 	GENERATED_BODY()
@@ -391,6 +398,7 @@ private:
 	bool IsDead;
 	bool IsHealthUpgraded;
 	/***** MOVEMENT *****/
+	EPlayerMovement PlayerMovement;
 	bool CanDodge;
 	bool IsMovementInputDisabled;
 	bool IsRunDisabled;
@@ -423,6 +431,8 @@ private:
 	const UWorld* WorldPtr;
 /********************* PRIVATE METHODS *********************/
 private:
+	void DashMovement(float deltaTime);
+	void SlidingWallMovement(float deltaTime);
 	void SetInputDirLeft();
 	void SetInputDirRight();
 	void OnDeath();

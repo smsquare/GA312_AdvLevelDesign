@@ -19,6 +19,7 @@ ALD_Player::ALD_Player() {
 	HealthMax = 100.0f;
 
 	/***** MOVEMENT *****/
+	PlayerMovement = EPlayerMovement::PM_DEFAULT;
 	IsMovementInputDisabled = false;
 	IsRunDisabled = true;
 
@@ -80,40 +81,17 @@ void ALD_Player::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 // Called every frame
 void ALD_Player::Tick( float DeltaTime ) {
 	Super::Tick( DeltaTime );
-	if (IsDashing) {		
-		FVector location = GetActorLocation();
-		float distance = MostRecentInputDir * DashSpeed * DeltaTime;
-		location.X = location.X + distance;
-		
-		// If dashing to the left
-		if (MostRecentInputDir < 0) {
-			if (location.X < LocationToDash) {
-				location.X = LocationToDash;
-				ResetDash();
-			}
-		} else {
-			if (location.X > LocationToDash) {
-				location.X = LocationToDash;
-				ResetDash();
-			}
-		}
 
-		FHitResult outSweepHitResult;
-		bool successfulMove = SetActorLocation(location, true, &outSweepHitResult);
-		if (!successfulMove) {
-			ResetDash();
-			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "SetActorLocation sweeping failed while dashing!");
-		}
-	}
-
-	if (IsSlidingDownWall) {
-		FVector playerLocation = GetActorLocation();
-		JumpStats.ApplyWallSlideAcceleration(DeltaTime);
-		JumpStats.DisplayWallSlideDebugInfo();
-		FVector finalLocation = playerLocation -
-			(JumpStats.GetCurrentSlideVelocity() * GetActorUpVector() * DeltaTime);
-		//TODO: Implement floor detection / Turn on falloffpoints on wall
-		SetActorLocation(finalLocation);
+	switch (PlayerMovement) {
+	case EPlayerMovement::PM_DASH:
+		DashMovement(DeltaTime);
+		break;
+	case EPlayerMovement::PM_WALLSLIDE:
+		SlidingWallMovement(DeltaTime);
+		break;
+	default:
+		// Do nothing, it's handled by the CharacterMovementComponent
+		break;
 	}
 }
 
@@ -197,12 +175,45 @@ void ALD_Player::MoveRight(float Amount) {
 
 void ALD_Player::PlayerDash() {
 	if (IsDashEnabled && !IsDashOnCooldown) {
+		PlayerMovement = EPlayerMovement::PM_DASH;
 		GetCharacterMovement()->SetMovementMode(MOVE_Custom, (uint8)ECustomMovementType::CMT_Dash);
 		IsDashing = true;
 		IsDashOnCooldown = true;
 		SetIsMovementInputDisabled(true);
 		LocationToDash = GetActorLocation().X + (DashDistance * MostRecentInputDir);
 		GetCapsuleComponent()->SetCollisionProfileName(FName("Dashing"));
+	}
+}
+
+void ALD_Player::DashMovement(float deltaTime) {
+
+	if (IsDashing) {
+		PlayerMovement = EPlayerMovement::PM_DASH;
+
+		FVector location = GetActorLocation();
+		float distance = MostRecentInputDir * DashSpeed * deltaTime;
+		location.X = location.X + distance;
+
+		// If dashing to the left
+		if (MostRecentInputDir < 0) {
+			if (location.X < LocationToDash) {
+				location.X = LocationToDash;
+				ResetDash();
+			}
+		}
+		else {
+			if (location.X > LocationToDash) {
+				location.X = LocationToDash;
+				ResetDash();
+			}
+		}
+
+		FHitResult outSweepHitResult;
+		bool successfulMove = SetActorLocation(location, true, &outSweepHitResult);
+		if (!successfulMove) {
+			ResetDash();
+			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "SetActorLocation sweeping failed while dashing!");
+		}
 	}
 }
 
@@ -215,7 +226,9 @@ void ALD_Player::DashHitEnemy(UPrimitiveComponent * OverlappedComponent, AActor 
 bool ALD_Player::GetIsDashing() const {
 	return IsDashing;
 }
+
 void ALD_Player::ResetDash() {
+	PlayerMovement = EPlayerMovement::PM_DEFAULT;
 	IsDashing = false;
 	IsDashOnCooldown = false;
 	SetIsMovementInputDisabled(false);
@@ -384,6 +397,17 @@ FDetectWallHitInfo ALD_Player::DetectWall() {
 	return DWHitInfo;
 }
 
+void ALD_Player::SlidingWallMovement(float deltaTime) {
+	if (IsSlidingDownWall) {
+		FVector playerLocation = GetActorLocation();
+		JumpStats.ApplyWallSlideAcceleration(deltaTime);
+		JumpStats.DisplayWallSlideDebugInfo();
+		FVector finalLocation = playerLocation -
+			(JumpStats.GetCurrentSlideVelocity() * GetActorUpVector() * deltaTime);
+		SetActorLocation(finalLocation);
+	}
+}
+
 void ALD_Player::PlayerJump() {
 	if (GetIsMovementInputDisabled() == false) {
 		// If the player is grounded, this is their first jump
@@ -401,6 +425,7 @@ void ALD_Player::PlayerJump() {
 				// Set movement mode to allow user to hang on / slide on wall
 				GetCharacterMovement()->StopMovementImmediately();
 				GetCharacterMovement()->SetMovementMode(MOVE_Custom, (uint8)ECustomMovementType::CMT_WallSlide);
+				PlayerMovement = EPlayerMovement::PM_WALLSLIDE;
 				JumpStats.SetHangingOnWall(true);
 				JumpStats.SetWallOnPlayerSide(WallHitInfo.GetWallDirection());
 				JumpStats.SetCanDoubleJump(true);
@@ -421,7 +446,6 @@ void ALD_Player::PlayerJump() {
 	}
 }
 
-
 bool ALD_Player::GetUsedDoubleJump() const {
 	return UsedDoubleJump;
 }
@@ -438,6 +462,7 @@ const float ROOT_THREE_OVER_TWO = 0.86602540378;
 void ALD_Player::PlayerStopJump() {
 	// If you are hanging on a wall, jump off
 	if (JumpStats.GetHangingOnWall()) {
+		PlayerMovement = EPlayerMovement::PM_DEFAULT;
 		// Multiply JumpStats.GetWallOnPlayerSide into the y value for it to launch in the proper direction
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
 		GetCharacterMovement()->AddImpulse(
