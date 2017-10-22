@@ -2,6 +2,7 @@
 
 #include "LevelConcept.h"
 #include "LD_PlayerController.h"
+#include "BASE_EnemyCharacter.h"
 #include "LD_Door.h"
 #include "LD_Lever.h"
 #include "BASE_Projectile.h"
@@ -24,11 +25,12 @@ ALD_Player::ALD_Player() {
 	WalkSpeed = 450.0f;
 	RunSpeed = 900.0f;
 
-	MostRecentInputDir = 1;
-
-	LocationToDash = 0.0f;
 	DashDistance = 500.0f;
 	DashSpeed = 500.0f;
+	DashDamage = 24.0f;
+	MostRecentInputDir = 1;
+	LocationToDash = 0.0f;
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ALD_Player::DashHitEnemy);
 	//TODO: REMOVE UPON COMPLETION OF THE DASH ///////////////////////////////////////////////////////////////
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,6 +201,13 @@ void ALD_Player::PlayerDash() {
 		SetIsMovementInputDisabled(true);
 		LocationToDash = GetActorLocation().X + (DashDistance * MostRecentInputDir);
 		GetCapsuleComponent()->SetCollisionProfileName(FName("Dashing"));
+	}
+}
+
+void ALD_Player::DashHitEnemy(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
+	ABASE_EnemyCharacter* enemy = Cast<ABASE_EnemyCharacter>(OtherActor);
+	if (enemy) {
+		enemy->EnemyRecieveDamage(DashDamage);
 	}
 }
 
