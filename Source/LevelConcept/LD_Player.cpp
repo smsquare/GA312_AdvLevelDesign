@@ -210,7 +210,9 @@ void ALD_Player::DashHitEnemy(UPrimitiveComponent * OverlappedComponent, AActor 
 		enemy->EnemyRecieveDamage(DashDamage);
 	}
 }
-
+bool ALD_Player::GetIsDashing() const {
+	return IsDashing;
+}
 void ALD_Player::ResetDash() {
 	IsDashing = false;
 	IsDashOnCooldown = false;

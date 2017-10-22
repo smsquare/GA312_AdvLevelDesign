@@ -304,6 +304,8 @@ public:
 	void PlayerDash();
 	UFUNCTION(Category = "Dash")
 	void DashHitEnemy(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION(BlueprintCallable, Category = "Dash")
+	FORCEINLINE bool GetIsDashing() const;
 	void ResetDash();
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	FORCEINLINE bool GetIsMovementInputDisabled() const;
