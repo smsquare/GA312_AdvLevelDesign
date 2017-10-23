@@ -10,3 +10,13 @@ FPlayerKeys::FPlayerKeys() {
 }
 
 FPlayerKeys::~FPlayerKeys() {}
+
+int FPlayerKeys::GetNumOfCyanKeys() const {
+	return NumOfCyanKeys;
+}
+int FPlayerKeys::GetNumOfPurpleKeys() const {
+	return NumOfPurpleKeys;
+}
+int FPlayerKeys::GetNumOfYellowKeys() const {
+	return NumOfYellowKeys;
+}

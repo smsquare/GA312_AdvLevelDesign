@@ -11,15 +11,20 @@ struct LEVELCONCEPT_API FPlayerKeys {
 
 	//TODO: MOVE THESE TO PRIVATE AFTER IT WORKS
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Keys")
-	int NumOfCyanKeys;
+	uint8 NumOfCyanKeys;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Keys")
-	int NumOfPurpleKeys;
+	uint8 NumOfPurpleKeys;
 	UPROPERTY(VisibleAnywhere, Category = "Keys")
-	int NumOfYellowKeys;
+	uint8 NumOfYellowKeys;
 
 public:
 	FPlayerKeys();
 	~FPlayerKeys();
+
+	// Getters //
+	FORCEINLINE int GetNumOfCyanKeys() const;
+	FORCEINLINE int GetNumOfPurpleKeys() const;
+	FORCEINLINE int GetNumOfYellowKeys() const;
 
 //private:
 
