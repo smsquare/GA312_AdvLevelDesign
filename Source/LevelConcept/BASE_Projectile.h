@@ -39,9 +39,13 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
 	UProjectileMovementComponent* pProjectileMovementComponent;
 
+	UFUNCTION(Category = "Proximity")
+	void ProjectileCollisionDetection(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 // BASE METHODS //
 public:
 	ABASE_Projectile();
+	UFUNCTION(BlueprintCallable, Category = "Fire")
 	void LaunchProjectile(const FVector& aLaunchDirection);
 
 public:

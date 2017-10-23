@@ -24,16 +24,18 @@ ALD_Wall::ALD_Wall() {
 
 	// Create mesh and set it as root.
 	WallMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Wall Mesh"));
-	
-	//WallMesh->OnComponentHit.AddDynamic(this, &ALD_Wall:WallHit);
+	WallMesh->SetCollisionProfileName(FName("NoCollision"));
 	RootComponent = WallMesh;
-
+	// Create collider
+	WallCollider = CreateDefaultSubobject<UBoxComponent>("Wall Collider");
+	WallCollider->SetCollisionProfileName(FName("CustomWall"));	
+	WallCollider->AttachToComponent(WallMesh, FAttachmentTransformRules::KeepRelativeTransform);
+	//Create FallOffPoint
 	FallOffPoint = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Fall Off Point"));
 	FallOffPoint->SetCollisionProfileName(FName("FallOffPoint"));
 	FallOffPoint->AttachToComponent(WallMesh, FAttachmentTransformRules::KeepWorldTransform);
 	FallOffPoint->OnComponentBeginOverlap.AddDynamic(this, &ALD_Wall::FallOffDetection);
 	FallOffPoint->OnComponentEndOverlap.AddDynamic(this, &ALD_Wall::FallOffEndOverlap);
-
 }
 
 // Called when the game starts or when spawned
@@ -67,12 +69,49 @@ FWallInformation ALD_Wall::GetWallInfo() {
 	return wallInfo;
 }
 
+ESecretWallDamageType ALD_Wall::GetSecretDamageType() const {
+	return SecretDamageType;
+}
+
 void ALD_Wall::SecretWallHit() {
 	if (IsSecretWall) {
 		ShowSecretWallUI();
 		WallMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		WallCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		WallMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 		WallMesh->SetVisibility(false);
+	}
+}
+
+bool ALD_Wall::CanProjectileDamageWall(EProjectileOwner projectileSource) {
+	bool result = false;
+
+	switch (projectileSource) {
+	case EProjectileOwner::PO_Player:
+		if (SecretDamageType == ESecretWallDamageType::SD_PLAYERPROJECTILE ||
+			SecretDamageType == ESecretWallDamageType::SD_BOTHPROJECTILE ||
+			SecretDamageType == ESecretWallDamageType::SD_ANY) {
+			result = true;
+		}
+		break;
+	case EProjectileOwner::PO_Enemey:
+		if (SecretDamageType == ESecretWallDamageType::SD_ENEMYPROJECTILE ||
+			SecretDamageType == ESecretWallDamageType::SD_BOTHPROJECTILE || 
+			SecretDamageType == ESecretWallDamageType::SD_ANY) {
+			result = true;
+		}
+		break;
+	default:
+		result = false;
+		break;
+	}
+
+	return result;
+}
+
+void ALD_Wall::SecretWallShot(EProjectileOwner projectileSource) {
+	if (CanProjectileDamageWall(projectileSource)) {
+		SecretWallHit();
 	}
 }
 
@@ -85,8 +124,7 @@ void ALD_Wall::FallOffDetection(UPrimitiveComponent* OverlappedComponent, class 
 			if (player->JumpStats.GetHangingOnWall() == true) {
 				player->FallOffWall();
 			}
-			else {
-				//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "CANT TOUCH THIS");
+			else {				
 				player->JumpStats.SetFallOffPointTouched(true);
 			}
 		}
@@ -114,8 +152,4 @@ FString ALD_Wall::GetEnumValueToString(const FString& EnumName, EWallFrictionTyp
 		return FString("Invalid");
 	}
 	return enumPtr->GetEnumName((int32)EnumValue);
-}
-
-void ALD_Wall::WallHit(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
-
 }

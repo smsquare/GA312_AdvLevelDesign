@@ -44,6 +44,7 @@ enum class ESecretWallDamageType : uint8 {
 	SD_PLAYERPROJECTILE		UMETA(DisplayName = "Player Projectile"),
 	SD_ENEMYPROJECTILE		UMETA(DisplayName = "Enemy Projectile"),
 	SD_BOTHPROJECTILE		UMETA(DisplayName = "Player AND Enemy Projecilte"),
+	SD_ANY					UMETA(DisplayName = "Any Projectile or player Kick"),
 	SD_INVALID = 99			UMETA(Hidden)
 };
 
@@ -60,6 +61,8 @@ public:
 	// Mesh that contains the actual visible wall
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Wall Mesh")
 	class UInstancedStaticMeshComponent* WallMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Wall Collider")
+	UBoxComponent* WallCollider;
 
 	// Capsule to be placed in the scene for the location the player should fall off the wall.
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Fall Off Point")
@@ -83,8 +86,17 @@ public:
 	ALD_Wall();
 	virtual void BeginPlay() override;
 	FWallInformation GetWallInfo();
+
+	UFUNCTION(BlueprintCallable, Category = "Wall|Secret")
+	FORCEINLINE ESecretWallDamageType GetSecretDamageType() const;
+
+
 	UFUNCTION(BlueprintCallable, Category = "Proximity")
 	void SecretWallHit();
+	bool CanProjectileDamageWall(EProjectileOwner projectileSource);
+	UFUNCTION(BlueprintCallable, Category = "Proximity")
+	void SecretWallShot(EProjectileOwner projectileSource);	
+	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Secret")
 	void ShowSecretWallUI();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Secret")
@@ -96,6 +108,4 @@ public:
 	
 	// Primarily a debug function, used to print the name of the Enum established at the top of this .h
 	static FORCEINLINE FString GetEnumValueToString(const FString& EnumName, EWallFrictionType EnumValue);
-private:
-	void WallHit(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };
