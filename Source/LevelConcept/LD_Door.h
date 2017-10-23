@@ -3,25 +3,28 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "LD_SmallKey.h"
 #include "LD_Door.generated.h"
 
 UCLASS()
 class LEVELCONCEPT_API ALD_Door : public AActor {
 	GENERATED_BODY()
 public:
+	// VARIABLES //
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
 	bool IsOpen;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door|Lock", meta = (EditCondition = "!IsOpen"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door", meta = (EditCondition = "!IsOpen"))
 	bool IsLocked;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door", meta = (EditCondition = "IsLocked"))
+	EKeyColor KeyNeeded;
+
+	// MESHES //
 	UPROPERTY(EditAnywhere, Category = "Mesh|DoorFrame")
 	UStaticMeshComponent* DoorFrameMesh;
-	UPROPERTY(EditAnywhere, Category = "Mesh|Doors")
-	UStaticMeshComponent* LeftDoorMesh;
-	UPROPERTY(EditAnywhere, Category = "Mesh|Doors")
-	UStaticMeshComponent* RightDoorMesh;
-	UPROPERTY(EditAnywhere, Category = "Mesh|Doors")
-	UStaticMeshComponent* SmallLockMesh;
+	UPROPERTY(EditAnywhere, Category = "Mesh|Door")
+	UStaticMeshComponent* DoorMesh;
+
+	// COLLIDER //
 	UPROPERTY(EditAnywhere, Category = "Collider")
 	UBoxComponent* DoorCollider;
 
@@ -33,11 +36,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Door")
 	bool GetIsLocked() const;
-	
-	class ALD_Player;
 
 	UFUNCTION(BlueprintCallable, Category = "Door")
-	bool OpenDoor(uint8 numKeys);
+	bool OpenDoor();
 
 protected:
 	// Called when the game starts or when spawned

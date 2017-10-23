@@ -33,9 +33,6 @@ ALD_Player::ALD_Player() {
 	MostRecentInputDir = 1;
 	LocationToDash = 0.0f;
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ALD_Player::DashHitEnemy);
-	//TODO: REMOVE UPON COMPLETION OF THE DASH ///////////////////////////////////////////////////////////////
-	
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	CanDodge = false;
 	IsSlidingDownWall = false;
@@ -45,10 +42,6 @@ ALD_Player::ALD_Player() {
 	/***** INTERACT *****/
 	NumLeversLeft = 0;
 	NearLever = false;
-
-	/***** INVENTORY *****/
-	NumOfSmallKeys = 0;
-	HasBossKey = false;
 
 	/***** JUMPING *****/
 	JumpStats.DisableDoubleJump();
@@ -298,13 +291,13 @@ void ALD_Player::PushLever() {
 	}
 }
 
-void ALD_Player::PickupSmallKey() {
-	++NumOfSmallKeys;
-}
-
-uint8 ALD_Player::GetNumOfSmallKeys() const {
-	return NumOfSmallKeys;
-}
+//void ALD_Player::PickupSmallKey() {
+//	++NumOfSmallKeys;
+//}
+//
+//uint8 ALD_Player::GetNumOfSmallKeys() const {
+//	return NumOfSmallKeys;
+//}
 
 void ALD_Player::OpenDoor() {
 	// Start at player feet
@@ -315,7 +308,8 @@ void ALD_Player::OpenDoor() {
 	// Array of object types
 	// I BELIEVE ObjectTypeQuery1 is WorldStatic and ObjectTypeQuery2 is WorldDynamic
 	TArray< TEnumAsByte< EObjectTypeQuery > > ObjectTypes;
-	ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery2);
+	// This is the custom wall object type
+	ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery11);
 	// Actors to ignore
 	TArray<AActor*>ActorsToIgnore;
 	// Hit result
@@ -329,11 +323,52 @@ void ALD_Player::OpenDoor() {
 	if (HitDoor) {
 		ALD_Door* door = Cast<ALD_Door>(HitResult.GetActor());
 		if (door) {
-			if (door->OpenDoor(NumOfSmallKeys) && NumOfSmallKeys > 0) {
-				NumOfSmallKeys -= 1;
+			
+			switch (door->KeyNeeded) {
+			case EKeyColor::KC_CYAN:
+				if (KeyRing.GetNumOfCyanKeys() > 0) {
+					KeyRing.UseKey(EKeyColor::KC_CYAN);
+					door->OpenDoor();					
+				}
+				break;
+			case EKeyColor::KC_PURPLE:
+				if (GEngine) GEngine->AddOnScreenDebugMessage(
+					-1, 2, FColor::Purple, "Player kicked PURPLE Door");
+				if (KeyRing.GetNumOfPurpleKeys() > 0) {
+					KeyRing.UseKey(EKeyColor::KC_PURPLE);
+					door->OpenDoor();
+				}
+				break;
+			case EKeyColor::KC_YELLOW:
+				if (KeyRing.GetNumOfYellowKeys() > 0) {
+					KeyRing.UseKey(EKeyColor::KC_YELLOW);
+					door->OpenDoor();
+				}
+				break;
+
 			}
 		}
 	}
+}
+
+//////////////////////////////////////////////////////////////
+// 						   Inventory						//
+//			Methods to handle the player inventory.			//
+//////////////////////////////////////////////////////////////
+uint8 ALD_Player::GetNumOfKeyByColor(EKeyColor keyColor) const {
+	uint8 result = 0;
+	switch (keyColor) {
+	case EKeyColor::KC_CYAN:
+		result = KeyRing.GetNumOfCyanKeys();
+		break;
+	case EKeyColor::KC_PURPLE:
+		result = KeyRing.GetNumOfPurpleKeys();
+		break;
+	case EKeyColor::KC_YELLOW:
+		result = KeyRing.GetNumOfYellowKeys();
+		break;
+	}
+	return result;
 }
 
 //////////////////////////////////////////////////////////////
