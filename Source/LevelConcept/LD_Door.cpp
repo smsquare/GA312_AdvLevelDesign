@@ -20,7 +20,7 @@ ALD_Door::ALD_Door(const FObjectInitializer& ObjectInitializer)
 		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> RightDoorMesh;
 		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> SmallLockMesh;
 		FConstructorStatics()
-			: DoorFrameMesh(TEXT("/Game/Geometry/Meshes/SceneAssets/SM_Doorframe.SM_Doorframe")),
+			: DoorFrameMesh(TEXT("/Game/Geometry/Meshes/Door/TEMP_SM_DoorFrame.TEMP_SM_DoorFrame")),
 			LeftDoorMesh(TEXT("/Game/Geometry/Meshes/SceneAssets/SM_Door00L.SM_Door00L")),
 			RightDoorMesh(TEXT("/Game/Geometry/Meshes/SceneAssets/SM_Door00R.SM_Door00R")),
 			SmallLockMesh(TEXT("/Game/Geometry/Meshes/Locks/STMESH_SmallLock.STMESH_SmallLock")) {

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "LD_SmallKey.h"
 #include "LD_Door.generated.h"
 
 UCLASS()
