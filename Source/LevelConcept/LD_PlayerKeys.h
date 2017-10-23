@@ -9,12 +9,18 @@ USTRUCT()
 struct LEVELCONCEPT_API FPlayerKeys {
 	GENERATED_USTRUCT_BODY()
 
+	//TODO: MOVE THESE TO PRIVATE AFTER IT WORKS
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Keys")
+	int NumOfCyanKeys;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Keys")
+	int NumOfPurpleKeys;
+	UPROPERTY(VisibleAnywhere, Category = "Keys")
+	int NumOfYellowKeys;
+
 public:
 	FPlayerKeys();
 	~FPlayerKeys();
 
-private:
-	int NumOfCyanKeys;
-	int NumOfPurpleKeys;
-	int NumOfYellowKeys;
+//private:
+
 };

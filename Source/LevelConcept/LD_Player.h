@@ -266,7 +266,7 @@ public:
 
 	//----------------------- Inventory -------------------------//
 	// All the keys the player has //
-	UPROPERTY(EditAnywhere, Category = "Player|Keys")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Keys")
 	FPlayerKeys KeyRing;
 
 	//----------------------- COMBAT -------------------------//
