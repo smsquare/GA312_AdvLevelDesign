@@ -71,13 +71,12 @@ void ALD_Door::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChan
 	// Get the name of the property that changed
 	FName propertyName = (PropertyChangedEvent.Property != NULL) ?
 		PropertyChangedEvent.Property->GetFName() : NAME_None;
-	if (propertyName == GET_MEMBER_NAME_CHECKED(ALD_Door, IsLocked)) {
-		SmallLockMesh->SetVisibility(IsLocked);
-	}
+
 	if (propertyName == GET_MEMBER_NAME_CHECKED(ALD_Door, IsOpen)) {
 		if (IsOpen) {
 			IsLocked = false;
-			SmallLockMesh->SetVisibility(false);
+			KeyNeeded = EKeyColor::KC_INVALID;
+			//SmallLockMesh->SetVisibility(false);
 			DoorCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			DoorCollider->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 		}
@@ -85,8 +84,14 @@ void ALD_Door::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChan
 			DoorCollider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 			DoorCollider->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 		}
-		
+	}	
+	
+	if (propertyName == GET_MEMBER_NAME_CHECKED(ALD_Door, IsLocked)) {
+		if (!IsLocked) {
+			KeyNeeded = EKeyColor::KC_INVALID;
+		}
 	}
+
 }
 
 bool ALD_Door::GetIsLocked() const {
