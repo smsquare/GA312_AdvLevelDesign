@@ -33,9 +33,6 @@ ALD_Player::ALD_Player() {
 	MostRecentInputDir = 1;
 	LocationToDash = 0.0f;
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ALD_Player::DashHitEnemy);
-	//TODO: REMOVE UPON COMPLETION OF THE DASH ///////////////////////////////////////////////////////////////
-	
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	CanDodge = false;
 	IsSlidingDownWall = false;
@@ -45,10 +42,6 @@ ALD_Player::ALD_Player() {
 	/***** INTERACT *****/
 	NumLeversLeft = 0;
 	NearLever = false;
-
-	/***** INVENTORY *****/
-	NumOfSmallKeys = 0;
-	HasBossKey = false;
 
 	/***** JUMPING *****/
 	JumpStats.DisableDoubleJump();
@@ -298,13 +291,13 @@ void ALD_Player::PushLever() {
 	}
 }
 
-void ALD_Player::PickupSmallKey() {
-	++NumOfSmallKeys;
-}
-
-uint8 ALD_Player::GetNumOfSmallKeys() const {
-	return NumOfSmallKeys;
-}
+//void ALD_Player::PickupSmallKey() {
+//	++NumOfSmallKeys;
+//}
+//
+//uint8 ALD_Player::GetNumOfSmallKeys() const {
+//	return NumOfSmallKeys;
+//}
 
 void ALD_Player::OpenDoor() {
 	// Start at player feet
@@ -329,9 +322,9 @@ void ALD_Player::OpenDoor() {
 	if (HitDoor) {
 		ALD_Door* door = Cast<ALD_Door>(HitResult.GetActor());
 		if (door) {
-			if (door->OpenDoor(NumOfSmallKeys) && NumOfSmallKeys > 0) {
-				NumOfSmallKeys -= 1;
-			}
+			//if (door->OpenDoor(NumOfSmallKeys) && NumOfSmallKeys > 0) {
+			//	NumOfSmallKeys -= 1;
+			//}
 		}
 	}
 }

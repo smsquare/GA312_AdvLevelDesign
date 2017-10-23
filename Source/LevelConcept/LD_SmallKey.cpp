@@ -34,7 +34,7 @@ void ALD_SmallKey::Tick(float DeltaTime) {
 void ALD_SmallKey::PickupDetection(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
 	ALD_Player* player = Cast<ALD_Player>(OtherActor);
 	if (player) {
-		player->PickupSmallKey();
+		//TODO player->PickupSmallKey();
 		Destroy();
 	}
 }

@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "LD_Wall.h"
+#include "LD_PlayerKeys.h"
 #include "LD_Player.generated.h"
 
 UENUM(BlueprintType)
@@ -263,6 +264,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Player|Jump")
 	FJumpVariables JumpStats;
 
+	//----------------------- Inventory -------------------------//
+	// All the keys the player has //
+	UPROPERTY(EditAnywhere, Category = "Player|Keys")
+	FPlayerKeys KeyRing;
 
 	//----------------------- COMBAT -------------------------//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
@@ -327,12 +332,11 @@ public:
 	void OpenDoor();
 
 	//********************** INVENTORY *************************//
-	UFUNCTION(BlueprintCallable, Category = "Inventory|Keys")
-	void PickupSmallKey();
-	UFUNCTION(BlueprintCallable, Category = "Inventory|Keys")
-	uint8 GetNumOfSmallKeys() const;
-	//TODO: PickupBossKey();
-	//TODO: GetHasBossKey();
+	//TODO: DELETE THESE UPON COMPLETION OF KEY REWORK
+	//UFUNCTION(BlueprintCallable, Category = "Inventory|Keys")
+	//void PickupSmallKey();
+	//UFUNCTION(BlueprintCallable, Category = "Inventory|Keys")
+	//uint8 GetNumOfSmallKeys() const;
 	
 	//*********************** JUMPING **************************//
 	FDetectWallHitInfo DetectWall();
@@ -412,8 +416,8 @@ private:
 	// Put here so I can make the accessors BlueprintCallable
 	bool UsedDoubleJump;
 	//--------------------- INVENTORY ------------------------//
-	uint8 NumOfSmallKeys;
-	bool HasBossKey;
+	//uint8 NumOfSmallKeys;
+	//bool HasBossKey;
 	/***** COMBAT *****/
 	bool IsFireOnCooldown;
 	EBasicAttackType BasicAttackInUse;
