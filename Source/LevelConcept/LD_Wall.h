@@ -38,6 +38,15 @@ public:
 	}
 };
 
+UENUM(BlueprintType)
+enum class ESecretWallDamageType : uint8 {
+	SD_PLAYERKICK = 0		UMETA(DisplayName = "Player Kick"),
+	SD_PLAYERPROJECTILE		UMETA(DisplayName = "Player Projectile"),
+	SD_ENEMYPROJECTILE		UMETA(DisplayName = "Enemy Projectile"),
+	SD_BOTHPROJECTILE		UMETA(DisplayName = "Player AND Enemy Projecilte"),
+	SD_INVALID = 99			UMETA(Hidden)
+};
+
 UCLASS()
 class LEVELCONCEPT_API ALD_Wall : public AActor {
 	GENERATED_BODY()
@@ -61,7 +70,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall|Secret")
 	bool IsSecretWall;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall|Secret")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall|Secret", meta = (EditCondition = "IsSecretWall"))
+	ESecretWallDamageType SecretDamageType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall|Secret", meta = (EditCondition = "IsSecretWall"))
 	bool HasSecretMessage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall|Secret", meta = (EditCondition = "HasSecretMessage"))
 	FString SecretMessage;
@@ -85,4 +96,6 @@ public:
 	
 	// Primarily a debug function, used to print the name of the Enum established at the top of this .h
 	static FORCEINLINE FString GetEnumValueToString(const FString& EnumName, EWallFrictionType EnumValue);
+private:
+	void WallHit(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

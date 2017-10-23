@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LevelConcept.h"
+#include "BASE_Projectile.h"
 #include "LD_Wall.h"
 #include "LD_Player.h"
 
@@ -15,12 +16,16 @@ ALD_Wall::ALD_Wall() {
 	PrimaryActorTick.bCanEverTick = false;
 	
 	WallType = EWallFrictionType::WFT_Rough;
+	// Secret Wall variables //
 	IsSecretWall = false;
+	SecretDamageType = ESecretWallDamageType::SD_INVALID;
 	HasSecretMessage = false;
 	SecretMessage = "I'M A DEFAULT SECRET MESSAGE :D";
 
 	// Create mesh and set it as root.
 	WallMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Wall Mesh"));
+	
+	//WallMesh->OnComponentHit.AddDynamic(this, &ALD_Wall:WallHit);
 	RootComponent = WallMesh;
 
 	FallOffPoint = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Fall Off Point"));
@@ -34,6 +39,10 @@ ALD_Wall::ALD_Wall() {
 // Called when the game starts or when spawned
 void ALD_Wall::BeginPlay() {
 	Super::BeginPlay();	
+	if (IsSecretWall && SecretDamageType == ESecretWallDamageType::SD_INVALID) {
+		if (GEngine) GEngine->AddOnScreenDebugMessage(
+			-1, 10.0f, FColor::Red, "ERROR: " + GetActorLabel() + ": MUST SET SecretDamageType!");
+	}
 }
 
 FWallInformation ALD_Wall::GetWallInfo() {
@@ -105,4 +114,8 @@ FString ALD_Wall::GetEnumValueToString(const FString& EnumName, EWallFrictionTyp
 		return FString("Invalid");
 	}
 	return enumPtr->GetEnumName((int32)EnumValue);
+}
+
+void ALD_Wall::WallHit(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
+
 }
