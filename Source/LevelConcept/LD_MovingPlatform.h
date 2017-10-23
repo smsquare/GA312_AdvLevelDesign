@@ -141,6 +141,8 @@ public:
 	/*Degress to rotate per second*/
 	UPROPERTY(EditAnywhere, Category = "Platform|Movement", meta = (EditCondition = "IsPlatDirR"))
 	float RotationSpeed;
+	UPROPERTY(EditAnywhere, Category = "Platform|Movement")
+	bool IsTriggerRequired;
 	/*Do you want to have the platform hold it's position when it starts*/
 	UPROPERTY(EditAnywhere, Category = "Platform|Movement")
 	bool HasInitialHold;
@@ -163,6 +165,8 @@ public:
 
 private:
 	
+	bool HasTriggeredStart;
+
 	FVector PlatformStartLocation;
 	bool IsPausing;
 	UPROPERTY(VisibleDefaultsOnly)
@@ -189,6 +193,8 @@ private:
 public:	
 	ALD_MovingPlatform(const FObjectInitializer& ObjectInitializer);
 	virtual void Tick(float DeltaTime) override;
+	UFUNCTION(BlueprintCallable, Category = "Platform")
+	void StartPlatformMovement();
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 	FORCEINLINE FDebugRequiredInfo GetDebugRequiredInfo() const;
 	void SetIsPausing(bool value);
