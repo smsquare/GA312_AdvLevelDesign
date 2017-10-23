@@ -21,11 +21,10 @@ public:
 	FPlayerKeys();
 	~FPlayerKeys();
 
+	void PickUpKey(EKeyColor keyColor);
+
 	// Getters //
 	FORCEINLINE int GetNumOfCyanKeys() const;
 	FORCEINLINE int GetNumOfPurpleKeys() const;
 	FORCEINLINE int GetNumOfYellowKeys() const;
-
-//private:
-
 };
