@@ -9,6 +9,8 @@
 ALD_SmallKey::ALD_SmallKey() {
 	PrimaryActorTick.bCanEverTick = true;
 
+	KeyColor = EKeyColor::KC_INVALID;
+
 	RotationSpeed = -45.0f;
 
 	SmallKeyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Small Key Mesh"));

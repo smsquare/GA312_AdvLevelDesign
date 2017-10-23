@@ -5,10 +5,20 @@
 #include "GameFramework/Actor.h"
 #include "LD_SmallKey.generated.h"
 
+UENUM(BlueprintType)
+enum class EKeyColor : uint8 {
+	KC_CYAN = 0		UMETA(DisplayName = "Cyan Key"),
+	KC_PURPLE		UMETA(DisplayName = "Purple Key"),
+	KC_YELLOW		UMETA(DisplayName = "Yellow Key"),
+	KC_INVALID		UMETA(Hidden)
+};
+
 UCLASS()
 class LEVELCONCEPT_API ALD_SmallKey : public AActor  {
 	GENERATED_BODY()
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
+	EKeyColor KeyColor;
 	UPROPERTY(EditAnywhere, Category = "SmallKey")
 	float RotationSpeed;
 	UPROPERTY(EditAnywhere, Category = "Mesh|SmallKey")
