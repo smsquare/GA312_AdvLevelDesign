@@ -332,11 +332,9 @@ public:
 	void OpenDoor();
 
 	//********************** INVENTORY *************************//
-	//TODO: DELETE THESE UPON COMPLETION OF KEY REWORK
-	//UFUNCTION(BlueprintCallable, Category = "Inventory|Keys")
-	//void PickupSmallKey();
-	//UFUNCTION(BlueprintCallable, Category = "Inventory|Keys")
-	//uint8 GetNumOfSmallKeys() const;
+	UFUNCTION(BlueprintCallable, Category = "Inventory|Keys")
+	// Wrapper function to get key info into the UI.
+	uint8 GetNumOfKeyByColor(EKeyColor keyColor) const;
 	
 	//*********************** JUMPING **************************//
 	FDetectWallHitInfo DetectWall();

@@ -330,6 +330,26 @@ void ALD_Player::OpenDoor() {
 }
 
 //////////////////////////////////////////////////////////////
+// 						   Inventory						//
+//			Methods to handle the player inventory.			//
+//////////////////////////////////////////////////////////////
+uint8 ALD_Player::GetNumOfKeyByColor(EKeyColor keyColor) const {
+	uint8 result = 0;
+	switch (keyColor) {
+	case EKeyColor::KC_CYAN:
+		result = KeyRing.GetNumOfCyanKeys();
+		break;
+	case EKeyColor::KC_PURPLE:
+		result = KeyRing.GetNumOfPurpleKeys();
+		break;
+	case EKeyColor::KC_YELLOW:
+		result = KeyRing.GetNumOfYellowKeys();
+		break;
+	}
+	return result;
+}
+
+//////////////////////////////////////////////////////////////
 // 						   JUMPING 							//
 //				Methods to handle jumping logic.			//
 //////////////////////////////////////////////////////////////
