@@ -1,10 +1,14 @@
 #include "LevelConcept.h"
+#include "BASE_EnemyCharacter.h"
+#include "LD_Wall.h"
+#include "LD_Player.h"
 #include "BASE_Projectile.h"
 
 // Sets default values
 ABASE_Projectile::ABASE_Projectile() {
  	PrimaryActorTick.bCanEverTick = true;
 
+	ProjectileOwner = EProjectileOwner::PO_INVALID;
 	ProjectileName = "_UNKNOWN_PROJECTILE_";
 	ProjectileDamage = 1.0f;
 	ProjectileLifeSpan = 3.0f;
@@ -15,6 +19,7 @@ ABASE_Projectile::ABASE_Projectile() {
 	pCollisionComponent->InitSphereRadius(15.0f);
 	pCollisionComponent->SetCollisionProfileName(FName("PlayerProjectile"));
 	RootComponent = pCollisionComponent;
+	pCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ABASE_Projectile::ProjectileCollisionDetection);
 	// Mesh of the actual projectile
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
 	ProjectileMesh->AttachToComponent(pCollisionComponent, FAttachmentTransformRules::KeepRelativeTransform);
@@ -45,4 +50,33 @@ void ABASE_Projectile::BeginPlay() {
 // Called every frame
 void ABASE_Projectile::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+}
+
+void ABASE_Projectile::ProjectileCollisionDetection(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
+	if (ProjectileOwner == EProjectileOwner::PO_Player) {
+		ABASE_EnemyCharacter* enemyCharacter = Cast<ABASE_EnemyCharacter>(OtherActor);
+		if (enemyCharacter) {
+			enemyCharacter->EnemyRecieveDamage(ProjectileDamage);
+			Destroy();
+			return;
+		}
+
+		ALD_Wall* wall = Cast<ALD_Wall>(OtherActor);
+		if (wall) {
+			if (wall->IsSecretWall) {
+				wall->SecretWallShot(ProjectileOwner);
+			}
+			Destroy();
+			return;
+		}
+	}
+
+	else if (ProjectileOwner == EProjectileOwner::PO_Enemey) {
+		ALD_Player* player = Cast<ALD_Player>(OtherActor);
+		if (player) {
+			player->DamagePlayer(ProjectileDamage);
+		}
+	}
+
+	Destroy();
 }

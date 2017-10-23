@@ -360,6 +360,8 @@ FDetectWallHitInfo ALD_Player::DetectWall() {
 	// I BELIEVE ObjectTypeQuery1 is WorldStatic and ObjectTypeQuery2 is WorldDynamic
 	TArray< TEnumAsByte< EObjectTypeQuery > > ObjectTypes;
 	ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery2);
+	// I THINK this is the custom wall object type
+	ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery11);
 
 	// Actors to ignore
 	TArray<AActor*>ActorsToIgnore;

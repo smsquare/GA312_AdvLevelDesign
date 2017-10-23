@@ -38,6 +38,16 @@ public:
 	}
 };
 
+UENUM(BlueprintType)
+enum class ESecretWallDamageType : uint8 {
+	SD_PLAYERKICK = 0		UMETA(DisplayName = "Player Kick"),
+	SD_PLAYERPROJECTILE		UMETA(DisplayName = "Player Projectile"),
+	SD_ENEMYPROJECTILE		UMETA(DisplayName = "Enemy Projectile"),
+	SD_BOTHPROJECTILE		UMETA(DisplayName = "Player AND Enemy Projecilte"),
+	SD_ANY					UMETA(DisplayName = "Any Projectile or player Kick"),
+	SD_INVALID = 99			UMETA(Hidden)
+};
+
 UCLASS()
 class LEVELCONCEPT_API ALD_Wall : public AActor {
 	GENERATED_BODY()
@@ -51,6 +61,8 @@ public:
 	// Mesh that contains the actual visible wall
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Wall Mesh")
 	class UInstancedStaticMeshComponent* WallMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Wall Collider")
+	UBoxComponent* WallCollider;
 
 	// Capsule to be placed in the scene for the location the player should fall off the wall.
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Fall Off Point")
@@ -61,7 +73,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall|Secret")
 	bool IsSecretWall;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall|Secret")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall|Secret", meta = (EditCondition = "IsSecretWall"))
+	ESecretWallDamageType SecretDamageType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall|Secret", meta = (EditCondition = "IsSecretWall"))
 	bool HasSecretMessage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall|Secret", meta = (EditCondition = "HasSecretMessage"))
 	FString SecretMessage;
@@ -72,8 +86,17 @@ public:
 	ALD_Wall();
 	virtual void BeginPlay() override;
 	FWallInformation GetWallInfo();
+
+	UFUNCTION(BlueprintCallable, Category = "Wall|Secret")
+	FORCEINLINE ESecretWallDamageType GetSecretDamageType() const;
+
+
 	UFUNCTION(BlueprintCallable, Category = "Proximity")
 	void SecretWallHit();
+	bool CanProjectileDamageWall(EProjectileOwner projectileSource);
+	UFUNCTION(BlueprintCallable, Category = "Proximity")
+	void SecretWallShot(EProjectileOwner projectileSource);	
+	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Secret")
 	void ShowSecretWallUI();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Secret")
