@@ -23,8 +23,6 @@ public:
 	UStaticMeshComponent* DoorFrameMesh;
 	UPROPERTY(EditAnywhere, Category = "Mesh|Door")
 	UStaticMeshComponent* DoorMesh;
-	UPROPERTY(EditAnywhere, Category = "Mesh|Lock")
-	UStaticMeshComponent* SmallLockMesh;
 
 	// COLLIDER //
 	UPROPERTY(EditAnywhere, Category = "Collider")

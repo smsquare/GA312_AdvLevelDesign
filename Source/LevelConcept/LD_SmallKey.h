@@ -8,7 +8,7 @@ enum class EKeyColor : uint8 {
 	KC_CYAN = 0		UMETA(DisplayName = "Cyan Key"),
 	KC_PURPLE		UMETA(DisplayName = "Purple Key"),
 	KC_YELLOW		UMETA(DisplayName = "Yellow Key"),
-	KC_INVALID		UMETA(Hidden)
+	KC_INVALID		UMETA(DisplayName = "**DO NOT USE**")
 };
 
 UCLASS()

@@ -44,18 +44,6 @@ ALD_Door::ALD_Door(const FObjectInitializer& ObjectInitializer)
 	//DoorMesh->SetRelativeLocation(FVector(7.0f, -77.0f, 0.0f));
 	DoorMesh->SetVisibility(true);
 	
-	//SmallLockMesh
-	SmallLockMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Small Lock Mesh"));
-	SmallLockMesh->AttachToComponent(DoorFrameMesh, FAttachmentTransformRules::KeepWorldTransform);
-	if (ConstructorStatics.SmallLockMesh.Succeeded()) {
-		SmallLockMesh->SetStaticMesh(ConstructorStatics.SmallLockMesh.Get());
-	}
-	SmallLockMesh->SetWorldLocationAndRotation(
-		FVector(-52.0379f, -8.875f, 54.672f), 
-		FRotator(-39.567f, 7.644f, -73.533f)
-	);
-	SmallLockMesh->SetVisibility(false);
-
 	//DoorCollider
 	DoorCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Door Collider"));
 	DoorCollider->AttachToComponent(DoorFrameMesh, FAttachmentTransformRules::KeepWorldTransform);
