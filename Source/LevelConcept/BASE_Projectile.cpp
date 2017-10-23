@@ -5,6 +5,7 @@
 ABASE_Projectile::ABASE_Projectile() {
  	PrimaryActorTick.bCanEverTick = true;
 
+	ProjectileOwner = EProjectileOwner::PO_INVALID;
 	ProjectileName = "_UNKNOWN_PROJECTILE_";
 	ProjectileDamage = 1.0f;
 	ProjectileLifeSpan = 3.0f;
