@@ -10,19 +10,23 @@ UCLASS()
 class LEVELCONCEPT_API ALD_Door : public AActor {
 	GENERATED_BODY()
 public:
+	// VARIABLES //
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
 	bool IsOpen;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door|Lock", meta = (EditCondition = "!IsOpen"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door", meta = (EditCondition = "!IsOpen"))
 	bool IsLocked;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door", meta = (EditCondition = "IsLocked"))
+	EKeyColor KeyNeeded;
+
+	// MESHES //
 	UPROPERTY(EditAnywhere, Category = "Mesh|DoorFrame")
 	UStaticMeshComponent* DoorFrameMesh;
-	UPROPERTY(EditAnywhere, Category = "Mesh|Doors")
-	UStaticMeshComponent* LeftDoorMesh;
-	UPROPERTY(EditAnywhere, Category = "Mesh|Doors")
-	UStaticMeshComponent* RightDoorMesh;
-	UPROPERTY(EditAnywhere, Category = "Mesh|Doors")
+	UPROPERTY(EditAnywhere, Category = "Mesh|Door")
+	UStaticMeshComponent* DoorMesh;
+	UPROPERTY(EditAnywhere, Category = "Mesh|Lock")
 	UStaticMeshComponent* SmallLockMesh;
+
+	// COLLIDER //
 	UPROPERTY(EditAnywhere, Category = "Collider")
 	UBoxComponent* DoorCollider;
 
@@ -34,8 +38,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Door")
 	bool GetIsLocked() const;
-	
-	class ALD_Player;
 
 	UFUNCTION(BlueprintCallable, Category = "Door")
 	bool OpenDoor(uint8 numKeys);
