@@ -159,7 +159,7 @@ ALD_MovingPlatform::ALD_MovingPlatform(const FObjectInitializer& ObjectInitializ
 
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = false;
+	
 	// Set PlatformMesh as the RootComponent
 	PlatformMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Platform Mesh"));
 	RootComponent = PlatformMesh;
@@ -242,6 +242,9 @@ ALD_MovingPlatform::ALD_MovingPlatform(const FObjectInitializer& ObjectInitializ
 // Called when the game starts or when spawned
 void ALD_MovingPlatform::BeginPlay() {
 	Super::BeginPlay();
+	if (WorldPtr == nullptr) {
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, "Begin play!");
+	}
 	PlatformStartLocation = GetActorLocation();
 	InitDirectionToMove();
 
@@ -264,6 +267,7 @@ void ALD_MovingPlatform::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 
 void ALD_MovingPlatform::PostInitializeComponents() {
 	Super::PostInitializeComponents();
+
 	WorldPtr = GetOuter()->GetWorld();
 	if (WorldPtr == nullptr) {
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, "ERROR: WorldPtr failed!");
@@ -275,15 +279,20 @@ void ALD_MovingPlatform::PostInitializeComponents() {
 	//	HasTriggeredStart = false;
 	//}
 }
+
+
 // Called every frame
 void ALD_MovingPlatform::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+	if (WorldPtr == nullptr) {
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, "PlatformTick!");
+	}
 	if (IsTriggerRequired) {
 		if (HasTriggeredStart && !IsPausing) {
 			MovePlatform(DeltaTime);
 		}
 	} 
-	else if (!IsPausing) {
+	else if (!IsTriggerRequired && !IsPausing) {
 		MovePlatform(DeltaTime);
 	}
 }
