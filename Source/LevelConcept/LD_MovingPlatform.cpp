@@ -189,15 +189,6 @@ ALD_MovingPlatform::ALD_MovingPlatform(const FObjectInitializer& ObjectInitializ
 	CurrentRadialRotation = 0.0f;
 	DirectionToMove = 0;
 
-	// Initialize LocationMarker
-	//LocationMarker = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Location Marker"));
-	//LocationMarker->AttachToComponent(PlatformMesh, FAttachmentTransformRules::KeepWorldTransform);
-	//LocationMarker->SetStaticMesh(ConstructorStatics.SphereMesh.Get());
-	//LocationMarker->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
-	//LocationMarker->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
-	//LocationMarker->SetVisibility(false);
-	//LocationMarker->SetHiddenInGame(true);
-
 	// Spikes
 	HasSpikes = false;
 	SpikeDirection = EPlatformSpikeDir::PSD_NONE;
