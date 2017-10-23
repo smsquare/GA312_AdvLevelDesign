@@ -25,6 +25,20 @@ void FPlayerKeys::PickUpKey(EKeyColor keyColor) {
 	}
 }
 
+void FPlayerKeys::UseKey(EKeyColor keyUsed) {
+	switch (keyUsed) {
+	case EKeyColor::KC_CYAN:
+		--NumOfCyanKeys;
+		break;
+	case EKeyColor::KC_PURPLE:
+		--NumOfPurpleKeys;
+		break;
+	case EKeyColor::KC_YELLOW:
+		--NumOfYellowKeys;
+		break;
+	}
+}
+
 int FPlayerKeys::GetNumOfCyanKeys() const {
 	return NumOfCyanKeys;
 }

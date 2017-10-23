@@ -38,7 +38,7 @@ public:
 	bool GetIsLocked() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Door")
-	bool OpenDoor(uint8 numKeys);
+	bool OpenDoor();
 
 protected:
 	// Called when the game starts or when spawned

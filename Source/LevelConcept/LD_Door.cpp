@@ -86,27 +86,23 @@ bool ALD_Door::GetIsLocked() const {
 	return IsLocked;
 }
 
-bool ALD_Door::OpenDoor(uint8 numKeys) {
+bool ALD_Door::OpenDoor() {
 	bool didOpen = false;
 	if (!IsOpen) {
-		if (numKeys > 0 && IsLocked) {
+		if ( IsLocked) {
 			IsOpen = true;
 			IsLocked = false;
-			DoorCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			DoorCollider->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-			SmallLockMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			SmallLockMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-			SmallLockMesh->SetVisibility(false);
+			DoorMesh->DestroyComponent();
+			DoorCollider->SetCollisionProfileName(FName("NoCollision"));
 			didOpen = true;
 		}
 		else if (!IsLocked) {
 			IsOpen = true;
-			DoorCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			DoorCollider->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+			DoorMesh->DestroyComponent();
+			DoorCollider->SetCollisionProfileName(FName("NoCollision"));
 			didOpen = true;
 		}
 	}
-
 	return didOpen;
 }
 

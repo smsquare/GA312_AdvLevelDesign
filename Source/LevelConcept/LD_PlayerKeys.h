@@ -22,6 +22,7 @@ public:
 	~FPlayerKeys();
 
 	void PickUpKey(EKeyColor keyColor);
+	void UseKey(EKeyColor keyUsed);
 
 	// Getters //
 	FORCEINLINE int GetNumOfCyanKeys() const;

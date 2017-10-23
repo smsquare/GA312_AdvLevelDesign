@@ -308,7 +308,8 @@ void ALD_Player::OpenDoor() {
 	// Array of object types
 	// I BELIEVE ObjectTypeQuery1 is WorldStatic and ObjectTypeQuery2 is WorldDynamic
 	TArray< TEnumAsByte< EObjectTypeQuery > > ObjectTypes;
-	ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery2);
+	// This is the custom wall object type
+	ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery11);
 	// Actors to ignore
 	TArray<AActor*>ActorsToIgnore;
 	// Hit result
@@ -322,9 +323,30 @@ void ALD_Player::OpenDoor() {
 	if (HitDoor) {
 		ALD_Door* door = Cast<ALD_Door>(HitResult.GetActor());
 		if (door) {
-			//if (door->OpenDoor(NumOfSmallKeys) && NumOfSmallKeys > 0) {
-			//	NumOfSmallKeys -= 1;
-			//}
+			
+			switch (door->KeyNeeded) {
+			case EKeyColor::KC_CYAN:
+				if (KeyRing.GetNumOfCyanKeys() > 0) {
+					KeyRing.UseKey(EKeyColor::KC_CYAN);
+					door->OpenDoor();					
+				}
+				break;
+			case EKeyColor::KC_PURPLE:
+				if (GEngine) GEngine->AddOnScreenDebugMessage(
+					-1, 2, FColor::Purple, "Player kicked PURPLE Door");
+				if (KeyRing.GetNumOfPurpleKeys() > 0) {
+					KeyRing.UseKey(EKeyColor::KC_PURPLE);
+					door->OpenDoor();
+				}
+				break;
+			case EKeyColor::KC_YELLOW:
+				if (KeyRing.GetNumOfYellowKeys() > 0) {
+					KeyRing.UseKey(EKeyColor::KC_YELLOW);
+					door->OpenDoor();
+				}
+				break;
+
+			}
 		}
 	}
 }
