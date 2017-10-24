@@ -159,7 +159,7 @@ ALD_MovingPlatform::ALD_MovingPlatform(const FObjectInitializer& ObjectInitializ
 
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 	// Set PlatformMesh as the RootComponent
 	PlatformMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Platform Mesh"));
 	RootComponent = PlatformMesh;
@@ -173,6 +173,8 @@ ALD_MovingPlatform::ALD_MovingPlatform(const FObjectInitializer& ObjectInitializ
 	RadialDirection = EPlatformStartDirR::R_INVALID;
 	DistanceToMove = 0.0f;
 	MovementSpeed = 0.0f;
+	IsTriggerRequired = false;
+	HasTriggeredStart = false;
 	HasInitialHold = false;
 	InitialHoldDuration = 0.0f;
 	DoesPlatformPause = false;
@@ -186,15 +188,6 @@ ALD_MovingPlatform::ALD_MovingPlatform(const FObjectInitializer& ObjectInitializ
 	IsPausing = false;
 	CurrentRadialRotation = 0.0f;
 	DirectionToMove = 0;
-
-	// Initialize LocationMarker
-	//LocationMarker = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Location Marker"));
-	//LocationMarker->AttachToComponent(PlatformMesh, FAttachmentTransformRules::KeepWorldTransform);
-	//LocationMarker->SetStaticMesh(ConstructorStatics.SphereMesh.Get());
-	//LocationMarker->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
-	//LocationMarker->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
-	//LocationMarker->SetVisibility(false);
-	//LocationMarker->SetHiddenInGame(true);
 
 	// Spikes
 	HasSpikes = false;
@@ -240,12 +233,22 @@ ALD_MovingPlatform::ALD_MovingPlatform(const FObjectInitializer& ObjectInitializ
 // Called when the game starts or when spawned
 void ALD_MovingPlatform::BeginPlay() {
 	Super::BeginPlay();
+	if (WorldPtr == nullptr) {
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, "Begin play!");
+	}
 	PlatformStartLocation = GetActorLocation();
 	InitDirectionToMove();
+
 	if (HasInitialHold) {
 		IsPausing = true;
 		StartInitialHoldTimer();
-	}
+	} 
+}
+
+void ALD_MovingPlatform::StartPlatformMovement() {
+	if (GEngine) GEngine->AddOnScreenDebugMessage(
+		-1, 3.0f, FColor::Red, "Start" + GetActorLabel() + ": platform movement!");
+	HasTriggeredStart = true;
 }
 
 // Clears up things like timers and variables
@@ -255,16 +258,32 @@ void ALD_MovingPlatform::EndPlay(const EEndPlayReason::Type EndPlayReason) {
 
 void ALD_MovingPlatform::PostInitializeComponents() {
 	Super::PostInitializeComponents();
+
 	WorldPtr = GetOuter()->GetWorld();
 	if (WorldPtr == nullptr) {
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, "ERROR: WorldPtr failed!");
 	}
+	//if (!IsTriggerRequired) {
+	//	HasTriggeredStart = true;
+	//}
+	//else if (IsTriggerRequired) {
+	//	HasTriggeredStart = false;
+	//}
 }
+
+
 // Called every frame
 void ALD_MovingPlatform::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-
-	if (!IsPausing) {
+	if (WorldPtr == nullptr) {
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Cyan, "PlatformTick!");
+	}
+	if (IsTriggerRequired) {
+		if (HasTriggeredStart && !IsPausing) {
+			MovePlatform(DeltaTime);
+		}
+	} 
+	else if (!IsTriggerRequired && !IsPausing) {
 		MovePlatform(DeltaTime);
 	}
 }
@@ -281,7 +300,6 @@ void ALD_MovingPlatform::PostEditChangeProperty(struct FPropertyChangedEvent& Pr
 	if (propertyName == GET_MEMBER_NAME_CHECKED(ALD_MovingPlatform, Direction)) {
 		ResetPlatDirDropdownsExcept(Direction);
 		ResetAllIsPlatDirExcept(Direction);
-		ToggleLocationMarkerVisibility(Direction);
 		SetIsUsingDistance(Direction);
 	}
 
