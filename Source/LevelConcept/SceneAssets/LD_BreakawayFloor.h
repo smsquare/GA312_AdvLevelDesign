@@ -55,9 +55,11 @@ private:
 *************************/
 public:	
 	ALD_BreakawayFloor();
-	void SetColliderExtents(EFloorSize);
+	virtual void Tick(float DeltaTime) override;
+	void SetColliderExtents(EFloorSize sizeOfFloor);
+	void SetColliderLocation(EFloorSize sizeOfFloor);
+	UFUNCTION(Category = "Collision")
+	void FloorOverlapDetection(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 protected:
 	virtual void BeginPlay() override;
-public:	
-	virtual void Tick(float DeltaTime) override;	
 };
