@@ -50,6 +50,10 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Settings")
 	FVector RespawnLocation;
 
+	// Whether or not the player has triggered the platform.
+	bool IsTriggered;
+	// Timer handle used when player jumps on platform.
+	FTimerHandle BreakawayTimer;
 /************************* 
 		METHODS 
 *************************/

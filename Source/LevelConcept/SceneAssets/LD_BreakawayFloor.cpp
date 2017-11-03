@@ -18,12 +18,14 @@ ALD_BreakawayFloor::ALD_BreakawayFloor() {
 
  	// Start with tick turned off.
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
+	//PrimaryActorTick.SetTickFunctionEnable(true);
 	// init Settings
 	FloorSize = EFloorSize::FS_500;
 	TimeToBreakaway = 1.25;
 	TimeToRespawn	= 3.0;
 	RespawnLocation = GetActorLocation();
+	IsTriggered = false;
 
 	// Setup floor mesh component
 	FloorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Floor Mesh"));
@@ -76,13 +78,19 @@ void ALD_BreakawayFloor::BeginPlay() {
 // Called every frame
 void ALD_BreakawayFloor::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-
-	//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.1, FColor::Purple, "TESING IF TICK HAPPENS");
+	//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.1, FColor::Purple, "Tick is ticking");
+	//if (IsTriggered) {
+	//	//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.1, FColor::Purple, "Tick Has Been Triggered");
+	//}
 }
 
 void ALD_BreakawayFloor::FloorOverlapDetection(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
-	ALD_Player* player = Cast<ALD_Player>(OtherActor);
-	if (player) {
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "Player overlapped the floor, it should probably break.");
+	if (!IsTriggered) {
+		ALD_Player* player = Cast<ALD_Player>(OtherActor);
+		if (player) {
+			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "Player overlapped the floor, it should probably break.");
+			//PrimaryActorTick.SetTickFunctionEnable(true);
+			IsTriggered = true;
+		}
 	}
 }
