@@ -51,6 +51,7 @@ private:
 
 	// Whether or not the player has triggered the platform.
 	bool IsTriggered;
+	bool IsPlayerOverlapped;
 	// Timer handle used when player jumps on platform.
 	FTimerHandle BreakawayTimer;
 
@@ -75,7 +76,7 @@ public:
 public:
 	UFUNCTION(Category = "Collision")
 	void FloorOverlapDetection(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-	
+	void FloorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 protected:
 	virtual void BeginPlay() override;
 

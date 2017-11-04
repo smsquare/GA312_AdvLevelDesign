@@ -82,8 +82,6 @@ void ALD_BreakawayFloor::BeginPlay() {
 	
 }
 
-
-
 void ALD_BreakawayFloor::PostInitializeComponents() {
 	Super::PostInitializeComponents();
 
@@ -99,13 +97,19 @@ void ALD_BreakawayFloor::Tick(float DeltaTime) {
 }
 
 void ALD_BreakawayFloor::FloorOverlapDetection(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
-	if (!IsTriggered) {
-		ALD_Player* player = Cast<ALD_Player>(OtherActor);
-		if (player) {
+	// Make sure it's the player
+	ALD_Player* player = Cast<ALD_Player>(OtherActor);
+	if (player) {
+		IsPlayerOverlapped = true;
+		if (!IsTriggered) {
 			IsTriggered = true;
 			StartTimerToBreakaway();
 		}
 	}
+}
+
+void ALD_BreakawayFloor::FloorEndOverlap(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
+	IsPlayerOverlapped = false;
 }
 
 /**************************************************************** 
@@ -123,12 +127,15 @@ void ALD_BreakawayFloor::Breakaway() {
 }
 
 void ALD_BreakawayFloor::Respawn() {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(
-		-1, 3.0f, FColor::Cyan, "Respawn!!!!"
-	);
-
-	IsTriggered = false;
-	FloorMesh->SetVisibility(true);
+	if (!IsPlayerOverlapped) {
+		IsTriggered = false;
+		FloorMesh->SetVisibility(true);
+	}
+	else {
+		if (GEngine) GEngine->AddOnScreenDebugMessage(
+			-1, 3.0f, FColor::Cyan, "PLAYER IS IN THE WAY!!!!"
+		);
+	}
 }
 
 void ALD_BreakawayFloor::StartTimerToBreakaway() {
