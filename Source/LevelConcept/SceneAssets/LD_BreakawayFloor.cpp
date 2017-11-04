@@ -18,7 +18,6 @@ ALD_BreakawayFloor::ALD_BreakawayFloor() {
  	// Start with tick turned off.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
-	//PrimaryActorTick.SetTickFunctionEnable(true);
 	// init Settings
 	FloorSize = EFloorSize::FS_500;
 	TimeToBreakaway = 1.25;
@@ -53,8 +52,10 @@ void ALD_BreakawayFloor::SetColliderExtents(EFloorSize sizeOfFloor) {
 	FVector extents;
 	switch (sizeOfFloor) {
 	case EFloorSize::FS_100:
+		extents = FVector(45.0f, 250.0f, 17.0f);
 		break;
 	case EFloorSize::FS_250:
+		extents = FVector(120.0f, 250.0f, 17.0f);
 		break;
 	case EFloorSize::FS_500:
 		extents = FVector(245.0f, 250.0f, 17.0f);
@@ -67,9 +68,10 @@ void ALD_BreakawayFloor::SetColliderLocation(EFloorSize sizeOfFloor) {
 	
 	switch (sizeOfFloor) {
 	case EFloorSize::FS_100:
-		//loc.X = 
+		loc = FVector(50, -500.0f, 0.0f);
 		break;
 	case EFloorSize::FS_250:
+		loc = FVector(125.0f, -500.0f, 0.0f);
 		break;
 	case EFloorSize::FS_500:
 		loc = FVector(250.0f, -500.0f, 0.0f);
@@ -80,7 +82,6 @@ void ALD_BreakawayFloor::SetColliderLocation(EFloorSize sizeOfFloor) {
 // Called when the game starts or when spawned
 void ALD_BreakawayFloor::BeginPlay() {
 	Super::BeginPlay();
-	
 }
 
 void ALD_BreakawayFloor::PostInitializeComponents() {
@@ -101,7 +102,6 @@ void ALD_BreakawayFloor::Tick(float DeltaTime) {
 		PrimaryActorTick.SetTickFunctionEnable(false);
 		Respawn();
 	}
-
 }
 
 void ALD_BreakawayFloor::FloorOverlapDetection(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
@@ -121,9 +121,6 @@ void ALD_BreakawayFloor::FloorEndOverlap(UPrimitiveComponent * OverlappedComp, A
 	ALD_Player* player = Cast<ALD_Player>(OtherActor);
 	if (player) {
 		IsPlayerOverlapped = false;
-		if (GEngine) GEngine->AddOnScreenDebugMessage(
-			-1, 3.0f, FColor::Cyan, "FloorEndOverlap"
-		);
 	}
 }
 
@@ -131,10 +128,6 @@ void ALD_BreakawayFloor::FloorEndOverlap(UPrimitiveComponent * OverlappedComp, A
 						PRIVATE METHODS
 *****************************************************************/
 void ALD_BreakawayFloor::Breakaway() {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(
-		-1, 3.0f, FColor::Purple, "Breakaway!!!!"
-	);
-
 	FloorMesh->SetCollisionProfileName(FName("NoCollision"));
 	FloorMesh->SetVisibility(false);
 
@@ -148,9 +141,6 @@ void ALD_BreakawayFloor::Respawn() {
 		FloorMesh->SetCollisionProfileName(FName("BlockAllDynamic"));
 	}
 	else {
-		if (GEngine) GEngine->AddOnScreenDebugMessage(
-			-1, 3.0f, FColor::Cyan, "PLAYER IS IN THE WAY!!!!"
-		);
 		PrimaryActorTick.SetTickFunctionEnable(true);
 	}
 }
@@ -166,7 +156,7 @@ void ALD_BreakawayFloor::StartTimerToBreakaway() {
 void ALD_BreakawayFloor::StartTimerToRespawn() {
 	if (GetWorldPtr()) {
 		GetWorldPtr()->GetTimerManager().SetTimer(
-			BreakawayTimer, this, &ALD_BreakawayFloor::Respawn, TimeToBreakaway, false
+			BreakawayTimer, this, &ALD_BreakawayFloor::Respawn, TimeToRespawn, false
 		);
 	}
 }
