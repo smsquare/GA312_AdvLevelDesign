@@ -36,6 +36,7 @@ ALD_BreakawayFloor::ALD_BreakawayFloor() {
 	FloorCollider->AttachToComponent(FloorMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	FloorCollider->SetCollisionProfileName(FName("BreakawayFloor"));
 	FloorCollider->OnComponentBeginOverlap.AddDynamic(this, &ALD_BreakawayFloor::FloorOverlapDetection);
+	FloorCollider->OnComponentEndOverlap.AddDynamic(this, &ALD_BreakawayFloor::FloorEndOverlap);
 	SetColliderLocation(FloorSize);
 	SetColliderExtents(FloorSize);
 }
@@ -109,7 +110,10 @@ void ALD_BreakawayFloor::FloorOverlapDetection(UPrimitiveComponent * OverlappedC
 }
 
 void ALD_BreakawayFloor::FloorEndOverlap(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
-	IsPlayerOverlapped = false;
+	//IsPlayerOverlapped = false;
+	if (GEngine) GEngine->AddOnScreenDebugMessage(
+		-1, 3.0f, FColor::Cyan, "FloorEndOverlap"
+	);
 }
 
 /**************************************************************** 
@@ -119,7 +123,7 @@ void ALD_BreakawayFloor::Breakaway() {
 	if (GEngine) GEngine->AddOnScreenDebugMessage(
 		-1, 3.0f, FColor::Purple, "Breakaway!!!!"
 	);
-	FloorCollider->SetCollisionProfileName(FName("NoCollision"));
+
 	FloorMesh->SetCollisionProfileName(FName("NoCollision"));
 	FloorMesh->SetVisibility(false);
 
