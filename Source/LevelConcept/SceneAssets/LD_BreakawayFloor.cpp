@@ -41,6 +41,14 @@ ALD_BreakawayFloor::ALD_BreakawayFloor() {
 	SetColliderExtents(FloorSize);
 }
 
+bool ALD_BreakawayFloor::GetIsTriggered() const {
+	return IsTriggered;
+}
+
+const UWorld* ALD_BreakawayFloor::GetWorldPtr() const {
+	return WorldPtr;
+}
+
 void ALD_BreakawayFloor::SetColliderExtents(EFloorSize sizeOfFloor) {
 	FVector extents;
 	switch (sizeOfFloor) {
@@ -73,6 +81,15 @@ void ALD_BreakawayFloor::SetColliderLocation(EFloorSize sizeOfFloor) {
 void ALD_BreakawayFloor::BeginPlay() {
 	Super::BeginPlay();
 	
+}
+
+void ALD_BreakawayFloor::PostInitializeComponents() {
+	Super::PostInitializeComponents();
+
+	WorldPtr = GetOuter()->GetWorld();
+	if (WorldPtr == nullptr) {
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, "ERROR: BreakawayFloor WorldPtr initilization FAILED!");
+	}
 }
 
 // Called every frame
