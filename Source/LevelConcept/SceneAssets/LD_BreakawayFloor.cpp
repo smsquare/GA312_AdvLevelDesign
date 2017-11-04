@@ -20,7 +20,7 @@ ALD_BreakawayFloor::ALD_BreakawayFloor() {
 	PrimaryActorTick.bStartWithTickEnabled = false;
 	// init Settings
 	FloorSize = EFloorSize::FS_500;
-	TimeToBreakaway = 1.25;
+	TimeToBreakaway = 0.5f;
 	TimeToRespawn	= 3.0;
 	RespawnLocation = GetActorLocation();
 	IsTriggered = false;
