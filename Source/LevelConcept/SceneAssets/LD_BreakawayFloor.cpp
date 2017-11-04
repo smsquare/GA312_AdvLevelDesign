@@ -4,7 +4,6 @@
 #include "LD_Player.h"
 #include "LD_BreakawayFloor.h"
 
-
 // Sets default values
 ALD_BreakawayFloor::ALD_BreakawayFloor() {
 	// One time init over helpers for loading default meshes or other assets...
@@ -83,6 +82,35 @@ void ALD_BreakawayFloor::BeginPlay() {
 	
 }
 
+void ALD_BreakawayFloor::Breakaway() {
+	if (GEngine) GEngine->AddOnScreenDebugMessage(
+		-1, 3.0f, FColor::Purple, "Breakaway!!!!" 
+	);
+}
+
+void ALD_BreakawayFloor::Respawn() {
+
+}
+
+void ALD_BreakawayFloor::StartTimerToBreakaway() {
+	if (GEngine) GEngine->AddOnScreenDebugMessage(
+		-1, 3.0f, FColor::Purple, "StartTimerToBreakaway"
+	);
+	if (GetWorldPtr()) {
+		GetWorldPtr()->GetTimerManager().SetTimer(
+			BreakawayTimer, this, &ALD_BreakawayFloor::Breakaway, TimeToBreakaway, false
+		);
+	}
+}
+
+void ALD_BreakawayFloor::StartTimerToRespawn() {
+	if (GetWorldPtr()) {
+		GetWorldPtr()->GetTimerManager().SetTimer(
+			BreakawayTimer, this, &ALD_BreakawayFloor::Breakaway, TimeToBreakaway, false
+		);
+	}
+}
+
 void ALD_BreakawayFloor::PostInitializeComponents() {
 	Super::PostInitializeComponents();
 
@@ -105,9 +133,8 @@ void ALD_BreakawayFloor::FloorOverlapDetection(UPrimitiveComponent * OverlappedC
 	if (!IsTriggered) {
 		ALD_Player* player = Cast<ALD_Player>(OtherActor);
 		if (player) {
-			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "Player overlapped the floor, it should probably break.");
-			//PrimaryActorTick.SetTickFunctionEnable(true);
 			IsTriggered = true;
+			StartTimerToBreakaway();
 		}
 	}
 }

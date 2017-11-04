@@ -72,10 +72,15 @@ public:
 	// Setters //
 	void SetColliderExtents(EFloorSize sizeOfFloor);
 	void SetColliderLocation(EFloorSize sizeOfFloor);
-	
+public:
 	UFUNCTION(Category = "Collision")
 	void FloorOverlapDetection(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 	
 protected:
 	virtual void BeginPlay() override;
+private:
+	void Breakaway();
+	void Respawn();
+	void StartTimerToBreakaway();
+	void StartTimerToRespawn();
 };
