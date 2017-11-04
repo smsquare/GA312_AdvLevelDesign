@@ -86,6 +86,9 @@ void ALD_BreakawayFloor::Breakaway() {
 	if (GEngine) GEngine->AddOnScreenDebugMessage(
 		-1, 3.0f, FColor::Purple, "Breakaway!!!!" 
 	);
+	FloorCollider->SetCollisionProfileName(FName("NoCollision"));
+	FloorMesh->SetCollisionProfileName(FName("NoCollision"));
+	FloorMesh->SetVisibility(false);
 }
 
 void ALD_BreakawayFloor::Respawn() {
@@ -123,10 +126,6 @@ void ALD_BreakawayFloor::PostInitializeComponents() {
 // Called every frame
 void ALD_BreakawayFloor::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-	//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.1, FColor::Purple, "Tick is ticking");
-	//if (IsTriggered) {
-	//	//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.1, FColor::Purple, "Tick Has Been Triggered");
-	//}
 }
 
 void ALD_BreakawayFloor::FloorOverlapDetection(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
