@@ -82,37 +82,7 @@ void ALD_BreakawayFloor::BeginPlay() {
 	
 }
 
-void ALD_BreakawayFloor::Breakaway() {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(
-		-1, 3.0f, FColor::Purple, "Breakaway!!!!" 
-	);
-	FloorCollider->SetCollisionProfileName(FName("NoCollision"));
-	FloorMesh->SetCollisionProfileName(FName("NoCollision"));
-	FloorMesh->SetVisibility(false);
-}
 
-void ALD_BreakawayFloor::Respawn() {
-
-}
-
-void ALD_BreakawayFloor::StartTimerToBreakaway() {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(
-		-1, 3.0f, FColor::Purple, "StartTimerToBreakaway"
-	);
-	if (GetWorldPtr()) {
-		GetWorldPtr()->GetTimerManager().SetTimer(
-			BreakawayTimer, this, &ALD_BreakawayFloor::Breakaway, TimeToBreakaway, false
-		);
-	}
-}
-
-void ALD_BreakawayFloor::StartTimerToRespawn() {
-	if (GetWorldPtr()) {
-		GetWorldPtr()->GetTimerManager().SetTimer(
-			BreakawayTimer, this, &ALD_BreakawayFloor::Breakaway, TimeToBreakaway, false
-		);
-	}
-}
 
 void ALD_BreakawayFloor::PostInitializeComponents() {
 	Super::PostInitializeComponents();
@@ -135,5 +105,44 @@ void ALD_BreakawayFloor::FloorOverlapDetection(UPrimitiveComponent * OverlappedC
 			IsTriggered = true;
 			StartTimerToBreakaway();
 		}
+	}
+}
+
+/**************************************************************** 
+						PRIVATE METHODS
+*****************************************************************/
+void ALD_BreakawayFloor::Breakaway() {
+	if (GEngine) GEngine->AddOnScreenDebugMessage(
+		-1, 3.0f, FColor::Purple, "Breakaway!!!!"
+	);
+	FloorCollider->SetCollisionProfileName(FName("NoCollision"));
+	FloorMesh->SetCollisionProfileName(FName("NoCollision"));
+	FloorMesh->SetVisibility(false);
+
+	StartTimerToRespawn();
+}
+
+void ALD_BreakawayFloor::Respawn() {
+	if (GEngine) GEngine->AddOnScreenDebugMessage(
+		-1, 3.0f, FColor::Cyan, "Respawn!!!!"
+	);
+
+	IsTriggered = false;
+	FloorMesh->SetVisibility(true);
+}
+
+void ALD_BreakawayFloor::StartTimerToBreakaway() {
+	if (GetWorldPtr()) {
+		GetWorldPtr()->GetTimerManager().SetTimer(
+			BreakawayTimer, this, &ALD_BreakawayFloor::Breakaway, TimeToBreakaway, false
+		);
+	}
+}
+
+void ALD_BreakawayFloor::StartTimerToRespawn() {
+	if (GetWorldPtr()) {
+		GetWorldPtr()->GetTimerManager().SetTimer(
+			BreakawayTimer, this, &ALD_BreakawayFloor::Respawn, TimeToBreakaway, false
+		);
 	}
 }

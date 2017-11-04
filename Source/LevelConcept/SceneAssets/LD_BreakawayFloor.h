@@ -44,7 +44,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* FloorMesh;
 
-
 private: 
 	// Location the platform will appear at on respawn. This is the starting location.
 	UPROPERTY(VisibleAnywhere, Category = "Settings")
@@ -57,6 +56,7 @@ private:
 
 	/***** WORLD *****/
 	const UWorld* WorldPtr;
+
 /************************* 
 		METHODS 
 *************************/
@@ -78,6 +78,7 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+
 private:
 	void Breakaway();
 	void Respawn();
