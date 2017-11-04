@@ -95,6 +95,13 @@ void ALD_BreakawayFloor::PostInitializeComponents() {
 // Called every frame
 void ALD_BreakawayFloor::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+
+	if (!IsPlayerOverlapped) {
+
+		PrimaryActorTick.SetTickFunctionEnable(false);
+		Respawn();
+	}
+
 }
 
 void ALD_BreakawayFloor::FloorOverlapDetection(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
@@ -110,10 +117,14 @@ void ALD_BreakawayFloor::FloorOverlapDetection(UPrimitiveComponent * OverlappedC
 }
 
 void ALD_BreakawayFloor::FloorEndOverlap(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex) {
-	//IsPlayerOverlapped = false;
-	if (GEngine) GEngine->AddOnScreenDebugMessage(
-		-1, 3.0f, FColor::Cyan, "FloorEndOverlap"
-	);
+	// Make sure it's the player
+	ALD_Player* player = Cast<ALD_Player>(OtherActor);
+	if (player) {
+		IsPlayerOverlapped = false;
+		if (GEngine) GEngine->AddOnScreenDebugMessage(
+			-1, 3.0f, FColor::Cyan, "FloorEndOverlap"
+		);
+	}
 }
 
 /**************************************************************** 
@@ -134,11 +145,13 @@ void ALD_BreakawayFloor::Respawn() {
 	if (!IsPlayerOverlapped) {
 		IsTriggered = false;
 		FloorMesh->SetVisibility(true);
+		FloorMesh->SetCollisionProfileName(FName("BlockAllDynamic"));
 	}
 	else {
 		if (GEngine) GEngine->AddOnScreenDebugMessage(
 			-1, 3.0f, FColor::Cyan, "PLAYER IS IN THE WAY!!!!"
 		);
+		PrimaryActorTick.SetTickFunctionEnable(true);
 	}
 }
 
