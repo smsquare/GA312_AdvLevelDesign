@@ -12,7 +12,8 @@ public class LevelConcept : ModuleRules
             "LevelConcept/BASE",
             "LevelConcept/Pickups",
             "LevelConcept/Player",
-            "LevelConcept/SceneAssets"
+            "LevelConcept/SceneAssets",
+            "LevelConcept/Weapons"
         });
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 	}
