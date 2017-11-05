@@ -9,19 +9,19 @@ ABASE_ItemPickup::ABASE_ItemPickup() {
 	PickupType = EPickupType::PT_INVALID;
 	PickupName = "INVALID NAME OF PICKUP";
 	PickupRadius = 50.0f;
-	HasBeenPickedUp = false;
-	// Set PickupMesh as RootComponent
+	HasBeenPickedUp = false;	
+	// Setup Pickup Collider as RootComponent
+	PickupCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Pickup Collider"));
+	PickupCollider->SetSphereRadius(PickupRadius);
+	PickupCollider->SetCollisionProfileName(FName("PickupObject"));
+	PickupCollider->OnComponentBeginOverlap.AddDynamic(this, &ABASE_ItemPickup::PickupDetection);
+	RootComponent = PickupCollider;
+	// Set PickupMesh
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pickup Mesh"));
-	RootComponent = PickupMesh;
 	PickupMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	PickupMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	PickupMesh->SetVisibility(true);
-	// Setup Pickup Collider
-	PickupCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Pickup Collider"));
-	PickupCollider->AttachToComponent(PickupMesh, FAttachmentTransformRules::KeepWorldTransform);
-	PickupCollider->SetSphereRadius(PickupRadius);
-
-	PickupCollider->OnComponentBeginOverlap.AddDynamic(this, &ABASE_ItemPickup::PickupDetection);
+	PickupMesh->AttachToComponent(PickupCollider, FAttachmentTransformRules::KeepWorldTransform);
 }
 
 // Called when the game starts or when spawned
