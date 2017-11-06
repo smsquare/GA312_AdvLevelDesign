@@ -21,3 +21,9 @@ void ALD_WeaponPickup::PickupDetection(UPrimitiveComponent* OverlappedComponent,
 		}
 	}
 }
+
+void ALD_WeaponPickup::BeginPlay() {
+	if (TypeOfWeapon == EWeaponType::WT_INVALID) {
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "MUST SET TypeOfWeapon on " + GetActorLabel());
+	}
+}
