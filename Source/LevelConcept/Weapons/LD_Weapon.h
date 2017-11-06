@@ -21,4 +21,11 @@ public:
 	FWeapon();
 public:
 	void WeaponPickup(EWeaponType weaponPickedUp);
+private:
+	FString DEBUG_GetEWeaponTypeAsString(EWeaponType enumValue) {
+		const UEnum* enumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EWeaponType"), true);
+		if (!enumPtr) return FString("IVALID");
+
+		return enumPtr->GetEnumNameStringByValue((int64)enumValue);
+	}
 };
