@@ -7,3 +7,7 @@ FWeapon::FWeapon() {
 	CurrentWeapon = EWeaponType::WT_DEFAULT;
 }
 
+void FWeapon::WeaponPickup(EWeaponType weaponPickedUp) {
+
+}
+

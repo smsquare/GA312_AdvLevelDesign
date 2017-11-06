@@ -4,11 +4,11 @@
 
 UENUM(BlueprintType)
 enum class EWeaponType : uint8 {
-	WT_INVALID = 0	UMETA(Hidden, DisplayName = "INVALID"),
-	WT_DEFAULT		UMETA(DisplayName = "Default"),
+	WT_DEFAULT = 0	UMETA(DisplayName = "Default"),
 	WT_LASER		UMETA(DisplayName = "Bouncy Laser"),
 	WT_GRENADE		UMETA(DisplayName = "Grenade"),
-	MAX				UMETA(Hidden)
+	MAX				UMETA(Hidden),
+	WT_INVALID = 99	UMETA(Hidden, DisplayName = "INVALID")
 };
 
 USTRUCT()
@@ -19,6 +19,6 @@ public:
 	EWeaponType CurrentWeapon;
 public:
 	FWeapon();
-
-	void WeaponPickup();
+public:
+	void WeaponPickup(EWeaponType weaponPickedUp);
 };
