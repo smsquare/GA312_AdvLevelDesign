@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "LD_Wall.h"
+#include "LD_Weapon.h"
 #include "LD_PlayerKeys.h"
 #include "LD_Player.generated.h"
 
@@ -270,6 +271,9 @@ public:
 	FPlayerKeys KeyRing;
 
 	//----------------------- COMBAT -------------------------//
+	// Handle the Player's weapon blaster functionality, including pickup and swap of weapons.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	FWeapon PlayerWeapon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float LightBADamage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
