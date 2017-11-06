@@ -52,6 +52,8 @@ ALD_Door::ALD_Door(const FObjectInitializer& ObjectInitializer)
 }
 
 void ALD_Door::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) {
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
 	//Get all components
 	TArray<UActorComponent*> ownedComponents;
 	GetComponents(ownedComponents);

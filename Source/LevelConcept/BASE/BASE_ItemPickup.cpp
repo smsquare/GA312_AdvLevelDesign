@@ -35,6 +35,8 @@ void ABASE_ItemPickup::Tick(float DeltaTime) {
 }
 
 void ABASE_ItemPickup::PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent) {
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
 	//Get all components
 	TArray<UActorComponent*> ownedComponents;
 	GetComponents(ownedComponents);
