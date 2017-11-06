@@ -8,6 +8,6 @@ FWeapon::FWeapon() {
 }
 
 void FWeapon::WeaponPickup(EWeaponType weaponPickedUp) {
-
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Pickup of weapon: " + DEBUG_GetEWeaponTypeAsString(weaponPickedUp));
 }
 

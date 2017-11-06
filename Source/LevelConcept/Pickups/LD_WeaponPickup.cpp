@@ -14,10 +14,9 @@ void ALD_WeaponPickup::PickupDetection(UPrimitiveComponent* OverlappedComponent,
 	if (!HasBeenPickedUp) {
 		ALD_Player* player = Cast<ALD_Player>(OtherActor);
 		if (player) {
-			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "WeaponPickupDetection");
 			HasBeenPickedUp = true;
 			PickupMesh->SetVisibility(false);
-			// player->PickupWeapon(TypeOfWeapon);
+			player->PlayerWeapon.WeaponPickup(TypeOfWeapon);
 		}
 	}
 }
