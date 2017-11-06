@@ -3,6 +3,7 @@
 #include "LevelConcept.h"
 #include "LD_Weapon.h"
 
-ULD_Weapon::ULD_Weapon() {
+FWeapon::FWeapon() {
 	CurrentWeapon = EWeaponType::WT_DEFAULT;
 }
+
