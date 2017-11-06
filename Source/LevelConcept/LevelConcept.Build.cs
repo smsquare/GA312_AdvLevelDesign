@@ -12,6 +12,7 @@ public class LevelConcept : ModuleRules
             "LevelConcept/BASE",
             "LevelConcept/Pickups",
             "LevelConcept/Player",
+            "LevelConcept/Projectiles",
             "LevelConcept/SceneAssets",
             "LevelConcept/Weapons"
         });
