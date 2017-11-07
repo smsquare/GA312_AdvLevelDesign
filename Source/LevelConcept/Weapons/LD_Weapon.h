@@ -11,10 +11,23 @@ enum class EWeaponType : uint8 {
 	WT_INVALID = 99	UMETA(Hidden, DisplayName = "INVALID")
 };
 
+typedef EWeaponType EWT;
+
 USTRUCT()
 struct LEVELCONCEPT_API FWeaponStats {
 	GENERATED_USTRUCT_BODY()
 public:
+	// ALL arrays are in the order of the EWeaponType definition.
+	// 0.) Default
+	// 1.) Laser
+	// 2.) Grenade
+
+	// Hook up all of the blueprint implemented weapons.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Projectile")
+	TArray<TSubclassOf<class ABASE_Projectile>> ListOf_Projectiles;
+	
+	UPROPERTY(EditAnywhere, Category = "REFERENCE")
+	int ListOf_MaxAmmo[(int)EWT::MAX];
 
 public:
 	FWeaponStats();
@@ -33,7 +46,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 	EWeaponType CurrentWeapon;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon|Stats")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Projectile")
+	TSubclassOf<class ABASE_Projectile> CurrentProjectile;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Stats")
 	FWeaponStats CurrentStats;
 
 public:
@@ -47,5 +63,4 @@ private:
 
 		return enumPtr->GetEnumNameStringByValue((int64)enumValue);
 	}
-
 };
