@@ -31,7 +31,7 @@ public:
 
 public:
 	FWeaponStats();
-	void SetMaxAmmo(EWeaponType ammoType);
+	void SetMaxAmmo(const EWeaponType ammoType);	
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon|Stats")
@@ -56,6 +56,7 @@ public:
 public:
 	FWeapon();
 public:
+	void FireWeapon(const UWorld* world, class ALD_PlayerController* playerController, AActor* player);
 	void EquipWeapon(EWeaponType weapon);
 	void WeaponPickup(EWeaponType weaponPickedUp);
 private:

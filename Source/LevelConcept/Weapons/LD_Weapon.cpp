@@ -1,4 +1,5 @@
 #include "LevelConcept.h"
+#include "LD_PlayerController.h"
 #include "LD_Weapon.h"
 
 /*****************************************************
@@ -17,7 +18,7 @@ FWeaponStats::FWeaponStats() {
 	ListOf_Projectiles.AddDefaulted(3);
 }
 
-void FWeaponStats::SetMaxAmmo(EWeaponType ammoType) {
+void FWeaponStats::SetMaxAmmo(const EWeaponType ammoType) {
 	MaxAmmo = ListOf_MaxAmmo[(int)ammoType];
 }
 
@@ -28,6 +29,11 @@ void FWeaponStats::SetMaxAmmo(EWeaponType ammoType) {
 *****************************************************/
 FWeapon::FWeapon() {
 	CurrentWeapon = EWeaponType::WT_DEFAULT;
+}
+
+void FWeapon::FireWeapon(const UWorld* world, ALD_PlayerController* playerController, AActor* player) {
+	//TODO: If not on cooldown
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "FireWeapon ON FWeapon!!!!");
 }
 
 void FWeapon::EquipWeapon(EWeaponType weapon) {
