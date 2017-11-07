@@ -17,6 +17,10 @@ FWeaponStats::FWeaponStats() {
 	ListOf_Projectiles.AddDefaulted(3);
 }
 
+void FWeaponStats::SetMaxAmmo(EWeaponType ammoType) {
+	MaxAmmo = ListOf_MaxAmmo[(int)ammoType];
+}
+
 /*****************************************************
 **													**
 **					  FWeapon						**
@@ -26,7 +30,13 @@ FWeapon::FWeapon() {
 	CurrentWeapon = EWeaponType::WT_DEFAULT;
 }
 
+void FWeapon::EquipWeapon(EWeaponType weapon) {
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "Equiped " + DEBUG_GetEWeaponTypeAsString(weapon));
+	
+	CurrentProjectile = WeaponStats.ListOf_Projectiles[(int)weapon];
+	WeaponStats.SetMaxAmmo(weapon);
+}
+
 void FWeapon::WeaponPickup(EWeaponType weaponPickedUp) {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan, "Pickup of weapon: " + DEBUG_GetEWeaponTypeAsString(weaponPickedUp));
-	// EquipWeapon(weaponPickedUp);
+	EquipWeapon(weaponPickedUp);
 }

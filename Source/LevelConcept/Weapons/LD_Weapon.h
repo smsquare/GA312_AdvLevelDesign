@@ -31,6 +31,7 @@ public:
 
 public:
 	FWeaponStats();
+	void SetMaxAmmo(EWeaponType ammoType);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon|Stats")
@@ -55,6 +56,7 @@ public:
 public:
 	FWeapon();
 public:
+	void EquipWeapon(EWeaponType weapon);
 	void WeaponPickup(EWeaponType weaponPickedUp);
 private:
 	FString DEBUG_GetEWeaponTypeAsString(EWeaponType enumValue) {
