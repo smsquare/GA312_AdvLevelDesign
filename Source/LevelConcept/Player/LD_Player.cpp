@@ -48,7 +48,6 @@ ALD_Player::ALD_Player() {
 	UsedDoubleJump = false;
 
 	// COMBAT //
-	pTypeOfProjectile = nullptr;
 	IsFireOnCooldown = false;
 	LightBADamage = 15.0f;
 	HeavyBACooldown = 37.5f;
@@ -559,7 +558,6 @@ void ALD_Player::DEBUG_ToggleDoubleJump() {
 **************************************************************************/
 void ALD_Player::Fire() {
 	//TODO: If not on cooldown
-	//pTypeOfProjectile
 	if (PlayerWeapon.CurrentProjectile) {
 		UWorld* world = GetWorld();
 		if (world) {

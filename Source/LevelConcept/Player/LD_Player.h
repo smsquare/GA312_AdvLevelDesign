@@ -274,8 +274,6 @@ public:
 	// Handle the Player's weapon blaster functionality, including pickup and swap of weapons.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	FWeapon PlayerWeapon;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Projectile")
-	TSubclassOf<class ABASE_Projectile> pTypeOfProjectile;
 	
 	float LightBADamage;
 	float HeavyBADamage;
