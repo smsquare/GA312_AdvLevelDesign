@@ -559,7 +559,8 @@ void ALD_Player::DEBUG_ToggleDoubleJump() {
 **************************************************************************/
 void ALD_Player::Fire() {
 	//TODO: If not on cooldown
-	if (pTypeOfProjectile) {
+	//pTypeOfProjectile
+	if (PlayerWeapon.CurrentProjectile) {
 		UWorld* world = GetWorld();
 		if (world) {
 			ALD_PlayerController* playerController = 
@@ -574,7 +575,7 @@ void ALD_Player::Fire() {
 					ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 				// Spawn projectile
 				ABASE_Projectile* projectile = world->SpawnActor<ABASE_Projectile>(
-					(UClass*)pTypeOfProjectile, 
+					(UClass*)PlayerWeapon.CurrentProjectile,
 					this->GetActorLocation() + playerController->playerGunLocation, 
 					fireDirection.ToOrientationRotator(), 
 					spawnParameters

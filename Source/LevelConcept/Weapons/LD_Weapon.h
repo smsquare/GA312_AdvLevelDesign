@@ -50,7 +50,7 @@ public:
 	TSubclassOf<class ABASE_Projectile> CurrentProjectile;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Stats")
-	FWeaponStats CurrentStats;
+	FWeaponStats WeaponStats;
 
 public:
 	FWeapon();
