@@ -12,11 +12,30 @@ enum class EWeaponType : uint8 {
 };
 
 USTRUCT()
+struct LEVELCONCEPT_API FWeaponStats {
+	GENERATED_USTRUCT_BODY()
+public:
+
+public:
+	FWeaponStats();
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = "Weapon|Stats")
+	int CurrAmmo;
+	UPROPERTY(VisibleAnywhere, Category = "Weapon|Stats")
+	int MaxAmmo;
+};
+
+USTRUCT()
 struct LEVELCONCEPT_API FWeapon {
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 	EWeaponType CurrentWeapon;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon|Stats")
+	FWeaponStats CurrentStats;
+
 public:
 	FWeapon();
 public:
@@ -28,4 +47,5 @@ private:
 
 		return enumPtr->GetEnumNameStringByValue((int64)enumValue);
 	}
+
 };
