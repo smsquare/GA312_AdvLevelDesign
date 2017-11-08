@@ -30,9 +30,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Assets")
 	UStaticMeshComponent* ProjectileMesh;
-	UPROPERTY(EditAnywhere, Category = "Assets")
+	UPROPERTY(EditAnywhere, Category = "Assets|Audio")
 	USoundCue* ProjectileFireCue;
-	
+	UPROPERTY(EditAnywhere, Category = "Assets|Audio")
+	USoundCue* ProjectileImpactCue;
 	UPROPERTY(VisibleDefaultsOnly, Category = "Info|Projectile")
 	USphereComponent* pCollisionComponent;
 
