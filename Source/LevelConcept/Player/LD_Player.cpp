@@ -563,30 +563,7 @@ void ALD_Player::Fire() {
 		ALD_PlayerController* playerController = 
 			(ALD_PlayerController*)UGameplayStatics::GetPlayerController(world, 0);
 		if (playerController) {
-
 			PlayerWeapon.FireWeapon(world, playerController, this);
-
-			/*
-			FVector fireDirection = playerController->GetPlayerAimingDirection();
-			fireDirection.Normalize();
-			FActorSpawnParameters spawnParameters;
-			spawnParameters.Owner = this;
-			spawnParameters.Instigator = Instigator;
-			spawnParameters.SpawnCollisionHandlingOverride = 
-				ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-			
-			// Spawn projectile
-			ABASE_Projectile* projectile = world->SpawnActor<ABASE_Projectile>(
-				(UClass*)PlayerWeapon.CurrentProjectile,
-				this->GetActorLocation() + playerController->playerGunLocation, 
-				fireDirection.ToOrientationRotator(), 
-				spawnParameters
-			);
-			// shoot the projectile
-			if (projectile) {
-				projectile->LaunchProjectile(fireDirection);
-			}
-			*/
 		}
 	}
 }

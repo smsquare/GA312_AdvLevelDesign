@@ -56,7 +56,7 @@ public:
 public:
 	FWeapon();
 public:
-	void FireWeapon(const UWorld* world, class ALD_PlayerController* playerController, AActor* player);
+	void FireWeapon(UWorld* world, class ALD_PlayerController* playerController, AActor* player);
 	void EquipWeapon(EWeaponType weapon);
 	void WeaponPickup(EWeaponType weaponPickedUp);
 private:

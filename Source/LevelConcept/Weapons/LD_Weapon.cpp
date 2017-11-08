@@ -1,4 +1,5 @@
 #include "LevelConcept.h"
+#include "BASE_Projectile.h"
 #include "LD_PlayerController.h"
 #include "LD_Weapon.h"
 
@@ -31,9 +32,30 @@ FWeapon::FWeapon() {
 	CurrentWeapon = EWeaponType::WT_DEFAULT;
 }
 
-void FWeapon::FireWeapon(const UWorld* world, ALD_PlayerController* playerController, AActor* player) {
+void FWeapon::FireWeapon(UWorld* world, ALD_PlayerController* playerController, AActor* player) {
 	//TODO: If not on cooldown
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "FireWeapon ON FWeapon!!!!");
+
+	FVector fireDirection = playerController->GetPlayerAimingDirection();
+	fireDirection.Normalize();
+	FActorSpawnParameters spawnParameters;
+	spawnParameters.Owner = player;
+	spawnParameters.Instigator = player->Instigator;
+	spawnParameters.SpawnCollisionHandlingOverride =
+	ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	// Spawn projectile
+	ABASE_Projectile* projectile = world->SpawnActor<ABASE_Projectile>(
+		(UClass*)CurrentProjectile,
+		player->GetActorLocation() + playerController->playerGunLocation,
+		fireDirection.ToOrientationRotator(),
+		spawnParameters
+	);
+
+	// shoot the projectile
+	if (projectile) {
+		projectile->LaunchProjectile(fireDirection);
+	}
 }
 
 void FWeapon::EquipWeapon(EWeaponType weapon) {
