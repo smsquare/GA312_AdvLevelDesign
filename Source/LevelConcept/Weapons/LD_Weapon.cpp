@@ -35,7 +35,8 @@ FWeapon::FWeapon() {
 void FWeapon::FireWeapon(UWorld* world, ALD_PlayerController* playerController, AActor* player) {
 	//TODO: If not on cooldown
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "FireWeapon ON FWeapon!!!!");
-
+	// Check current ammo
+	// If player has ammo
 	FVector fireDirection = playerController->GetPlayerAimingDirection();
 	fireDirection.Normalize();
 	FActorSpawnParameters spawnParameters;
@@ -52,7 +53,7 @@ void FWeapon::FireWeapon(UWorld* world, ALD_PlayerController* playerController, 
 		spawnParameters
 	);
 
-	// shoot the projectile
+	// Launch the projectile
 	if (projectile) {
 		projectile->LaunchProjectile(fireDirection);
 	}

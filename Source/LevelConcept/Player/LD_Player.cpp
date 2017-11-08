@@ -556,8 +556,8 @@ void ALD_Player::DEBUG_ToggleDoubleJump() {
 /*************************************************************************
 								COMBAT
 **************************************************************************/
+// Function bound to the player's 'Fire' input
 void ALD_Player::Fire() {
-	
 	UWorld* world = GetWorld();
 	if (world) {
 		ALD_PlayerController* playerController = 
