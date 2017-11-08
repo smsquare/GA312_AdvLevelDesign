@@ -11,20 +11,27 @@ ALD_LaserProjectile::ALD_LaserProjectile() {
 }
 
 void ALD_LaserProjectile::ProjectileCollisionDetection(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	if (ProjectileImpactCue) {
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Emerald, "ProjectileImpactCue");
+		UGameplayStatics::PlaySound2D(OtherActor->GetWorld(), ProjectileImpactCue);
+	}
 	if (ProjectileOwner == EProjectileOwner::PO_Player) {
-		ABASE_EnemyCharacter* enemyCharacter = Cast<ABASE_EnemyCharacter>(OtherActor);
-		if (enemyCharacter) {
-			enemyCharacter->EnemyRecieveDamage(ProjectileDamage);
+		if (OtherActor->ActorHasTag(FName("Enemy"))) {
+			ABASE_EnemyCharacter* enemyCharacter = Cast<ABASE_EnemyCharacter>(OtherActor);
+			if (enemyCharacter) {
+				enemyCharacter->EnemyRecieveDamage(ProjectileDamage);
+			}
 			Destroy();
 			return;
 		}
-
-		ALD_Wall* wall = Cast<ALD_Wall>(OtherActor);
-		if (wall) {
-			if (wall->IsSecretWall) {
-				wall->SecretWallShot(ProjectileOwner);
+		else if (OtherActor->ActorHasTag(FName("Wall"))) {
+			ALD_Wall* wall = Cast<ALD_Wall>(OtherActor);
+			if (wall) {
+				if (wall->IsSecretWall) {
+					wall->SecretWallShot(ProjectileOwner);
+				}
+				return;
 			}
-			return;
 		}
 	}
 	else if (ProjectileOwner == EProjectileOwner::PO_Enemey) {
