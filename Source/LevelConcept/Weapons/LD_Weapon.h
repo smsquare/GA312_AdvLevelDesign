@@ -28,21 +28,29 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "REFERENCE")
 	int ListOf_MaxAmmo[(int)EWT::MAX];
+	UPROPERTY(EditAnywhere, Category = "REFERENCE")
+	float ListOf_RateOfFire[(int)EWT::MAX];
 
 public:
 	FWeaponStats();
+	FORCEINLINE float GetRateOfFire() const;
+	void SetWeaponStats(const EWeaponType weapon);
 	void SetMaxAmmo(const EWeaponType ammoType);	
+	void SetRateOfFire(const EWeaponType weapon);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon|Stats")
 	int CurrAmmo;
 	UPROPERTY(VisibleAnywhere, Category = "Weapon|Stats")
 	int MaxAmmo;
+	UPROPERTY(VisibleAnywhere, Category = "Weapon|Stats")
+	float RateOfFire;
 };
 
 USTRUCT()
 struct LEVELCONCEPT_API FWeapon {
 	GENERATED_USTRUCT_BODY()
+
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 	EWeaponType CurrentWeapon;
@@ -53,14 +61,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Stats")
 	FWeaponStats WeaponStats;
 
+private:
+	bool IsShotOnCooldown;
+
 public:
 	FWeapon();
+
 public:
-	void FireWeapon(UWorld* world, class ALD_PlayerController* playerController, AActor* player);
+	void FireWeapon(UWorld* world, class ALD_PlayerController* playerController, class ALD_Player* player);
 	void WeaponPickup(EWeaponType weaponPickedUp);
+	void StartShotCooldown(class ALD_Player* player);
+	void ClearShotCooldown(class ALD_Player* player);
+	void ResetShotCooldown();
 
 private:
 	void EquipWeapon(EWeaponType weapon);
+
 	void ShootProjectile(UWorld* world, class ALD_PlayerController* playerController, AActor* player);
 
 	FString DEBUG_GetEWeaponTypeAsString(EWeaponType enumValue) {
