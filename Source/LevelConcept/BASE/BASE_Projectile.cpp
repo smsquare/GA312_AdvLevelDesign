@@ -13,7 +13,8 @@ ABASE_Projectile::ABASE_Projectile() {
 	ProjectileDamage = 1.0f;
 	ProjectileLifeSpan = 3.0f;
 	ProjectileRateOfFire = 1.0f;
-	
+	TimeAlive = 0.0f;
+
 	// Create a SphereComponent for projectile collider
 	pCollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
 	pCollisionComponent->InitSphereRadius(15.0f);
@@ -50,27 +51,33 @@ void ABASE_Projectile::BeginPlay() {
 // Called every frame
 void ABASE_Projectile::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+	TimeAlive += DeltaTime;
+	if (TimeAlive >= ProjectileLifeSpan) {
+		Destroy();
+	}
 }
 
 void ABASE_Projectile::ProjectileCollisionDetection(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
 	if (ProjectileOwner == EProjectileOwner::PO_Player) {
-		ABASE_EnemyCharacter* enemyCharacter = Cast<ABASE_EnemyCharacter>(OtherActor);
-		if (enemyCharacter) {
-			enemyCharacter->EnemyRecieveDamage(ProjectileDamage);
-			Destroy();
-			return;
-		}
-
-		ALD_Wall* wall = Cast<ALD_Wall>(OtherActor);
-		if (wall) {
-			if (wall->IsSecretWall) {
-				wall->SecretWallShot(ProjectileOwner);
+		if (OtherActor->ActorHasTag(FName("Enemy"))) {
+			ABASE_EnemyCharacter* enemyCharacter = Cast<ABASE_EnemyCharacter>(OtherActor);
+			if (enemyCharacter) {
+				enemyCharacter->EnemyRecieveDamage(ProjectileDamage);
 			}
 			Destroy();
 			return;
 		}
+		else if (OtherActor->ActorHasTag(FName("Wall"))) {
+			ALD_Wall* wall = Cast<ALD_Wall>(OtherActor);
+			if (wall) {
+				if (wall->IsSecretWall) {
+					wall->SecretWallShot(ProjectileOwner);
+				}
+				Destroy();
+				return;
+			}
+		}
 	}
-
 	else if (ProjectileOwner == EProjectileOwner::PO_Enemey) {
 		ALD_Player* player = Cast<ALD_Player>(OtherActor);
 		if (player) {

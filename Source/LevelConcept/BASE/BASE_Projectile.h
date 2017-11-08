@@ -38,18 +38,18 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
 	UProjectileMovementComponent* pProjectileMovementComponent;
-
-	UFUNCTION(Category = "Proximity")
-	virtual void ProjectileCollisionDetection(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+private:
+	float TimeAlive;
 
 // BASE METHODS //
 public:
 	ABASE_Projectile();
+	virtual void Tick(float DeltaTime) override;
 	UFUNCTION(BlueprintCallable, Category = "Fire")
 	void LaunchProjectile(const FVector& aLaunchDirection);
+	UFUNCTION(Category = "Proximity")
+	virtual void ProjectileCollisionDetection(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-public:
-	virtual void Tick(float DeltaTime) override;
 protected:
 	virtual void BeginPlay() override;
 };
