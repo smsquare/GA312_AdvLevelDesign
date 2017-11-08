@@ -568,6 +568,10 @@ void ALD_Player::Fire() {
 	}
 }
 
+void ALD_Player::ResetFireCooldown() {
+	PlayerWeapon.ResetShotCooldown();
+}
+
 void ALD_Player::PressedLightBasicAttack() {
 	if (!IsBasicAttackOnCooldown && !GetCharacterMovement()->IsFalling()) {
 		IsBasicAttackOnCooldown = true;
@@ -656,6 +660,18 @@ void ALD_Player::ClearWallHoldTimer() {
 void ALD_Player::ClearWallSlideTimer() {
 	if (GetWorldPtr()) {
 		GetWorldPtr()->GetTimerManager().ClearTimer(WallSlideTimer);
+	}
+}
+
+void ALD_Player::StartFireCooldown(float rateOfFire) {
+	if (GetWorldPtr()) {
+		GetWorldPtr()->GetTimerManager().SetTimer(FireTimer, this, &ALD_Player::ResetFireCooldown, rateOfFire, false);
+	}
+}
+
+void ALD_Player::ClearFireTimer() {
+	if (GetWorldPtr()) {
+		GetWorldPtr()->GetTimerManager().ClearTimer(FireTimer);
 	}
 }
 

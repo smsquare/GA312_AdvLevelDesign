@@ -351,14 +351,15 @@ public:
 
 	//*********************** COMBAT **************************//
 	void Fire();
-	void PressedLightBasicAttack();
-	void PressedHeavyBasicAttack();
+	void ResetFireCooldown();
 	void PressedKick();
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
 	bool GetIsFireOnCooldown() const;
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
 	void SetIsFireOnCooldown(const bool& value);
-
+	//TODO: DEPRECATE ALL FUNCTIONS LISTED BELOW IN COMBAT
+	void PressedLightBasicAttack();
+	void PressedHeavyBasicAttack();
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
 	EBasicAttackType GetBasicAttackInUse() const;
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
@@ -380,8 +381,10 @@ public:
 	void ClearWallHoldTimer();
 	void ClearWallSlideTimer();
 
+	void StartFireCooldown(float rateOfFire);
+	void ClearFireTimer();
+	//TODO: THESE ALL NEED TO BE DEPRICATED
 	void StartBasicAttackCooldownTimer(EBasicAttackType typeofEBAT);
-
 	void StartLightBasicAttackTimer(const float& duration);
 	void ClearLightBasicAttackTimer();
 	void StartHeavyBasicAttackTimer(const float& duration);
