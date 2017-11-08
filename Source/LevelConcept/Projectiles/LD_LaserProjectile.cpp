@@ -7,7 +7,7 @@
 #include "LD_LaserProjectile.h"
 
 ALD_LaserProjectile::ALD_LaserProjectile() {
-
+	ProjectileLifeSpan = 4.0f;
 }
 
 void ALD_LaserProjectile::ProjectileCollisionDetection(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
@@ -27,7 +27,6 @@ void ALD_LaserProjectile::ProjectileCollisionDetection(UPrimitiveComponent* Over
 			return;
 		}
 	}
-
 	else if (ProjectileOwner == EProjectileOwner::PO_Enemey) {
 		ALD_Player* player = Cast<ALD_Player>(OtherActor);
 		if (player) {
@@ -35,6 +34,4 @@ void ALD_LaserProjectile::ProjectileCollisionDetection(UPrimitiveComponent* Over
 			Destroy();
 		}
 	}
-
-	
 }
