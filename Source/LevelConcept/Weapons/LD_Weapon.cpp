@@ -54,7 +54,6 @@ FWeapon::FWeapon() {
 
 void FWeapon::FireWeapon(UWorld* world, ALD_PlayerController* playerController, ALD_Player* player) {
 	if (!IsShotOnCooldown) {
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "FireWeapon ON FWeapon!!!!");
 		// Check current ammo
 		// If player has ammo
 		ShootProjectile(world, playerController, player);
@@ -73,7 +72,6 @@ void FWeapon::EquipWeapon(EWeaponType weapon) {
 }
 
 void FWeapon::StartShotCooldown(ALD_Player* player) {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "StartShotCooldown!!!!");
 	IsShotOnCooldown = true;	
 	player->StartFireCooldown(WeaponStats.GetRateOfFire());	
 }
@@ -83,7 +81,6 @@ void FWeapon::ClearShotCooldown(class ALD_Player* player) {
 }
 
 void FWeapon::ResetShotCooldown() {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "ResetShotCooldown!!!!");
 	IsShotOnCooldown = false;
 }
 
@@ -107,5 +104,11 @@ void FWeapon::ShootProjectile(UWorld* world, class ALD_PlayerController* playerC
 	// Launch the projectile
 	if (projectile) {
 		projectile->LaunchProjectile(fireDirection);
+	}
+
+	// Play ProjectileFire Sound
+	USoundCue* sfx = CurrentProjectile.GetDefaultObject()->ProjectileFireCue;
+	if (sfx) {
+		UGameplayStatics::PlaySound2D(world, sfx);
 	}
 }
