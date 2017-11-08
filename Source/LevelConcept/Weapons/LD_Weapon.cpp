@@ -37,26 +37,11 @@ void FWeapon::FireWeapon(UWorld* world, ALD_PlayerController* playerController, 
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, "FireWeapon ON FWeapon!!!!");
 	// Check current ammo
 	// If player has ammo
-	FVector fireDirection = playerController->GetPlayerAimingDirection();
-	fireDirection.Normalize();
-	FActorSpawnParameters spawnParameters;
-	spawnParameters.Owner = player;
-	spawnParameters.Instigator = player->Instigator;
-	spawnParameters.SpawnCollisionHandlingOverride =
-	ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	ShootProjectile(world, playerController, player);
+}
 
-	// Spawn projectile
-	ABASE_Projectile* projectile = world->SpawnActor<ABASE_Projectile>(
-		(UClass*)CurrentProjectile,
-		player->GetActorLocation() + playerController->playerGunLocation,
-		fireDirection.ToOrientationRotator(),
-		spawnParameters
-	);
-
-	// Launch the projectile
-	if (projectile) {
-		projectile->LaunchProjectile(fireDirection);
-	}
+void FWeapon::WeaponPickup(EWeaponType weaponPickedUp) {
+	EquipWeapon(weaponPickedUp);
 }
 
 void FWeapon::EquipWeapon(EWeaponType weapon) {
@@ -66,6 +51,25 @@ void FWeapon::EquipWeapon(EWeaponType weapon) {
 	WeaponStats.SetMaxAmmo(weapon);
 }
 
-void FWeapon::WeaponPickup(EWeaponType weaponPickedUp) {
-	EquipWeapon(weaponPickedUp);
+void FWeapon::ShootProjectile(UWorld* world, class ALD_PlayerController* playerController, AActor* player) {
+	FVector fireDirection = playerController->GetPlayerAimingDirection();
+	fireDirection.Normalize();
+	FActorSpawnParameters spawnParameters;
+	spawnParameters.Owner = player;
+	spawnParameters.Instigator = player->Instigator;
+	spawnParameters.SpawnCollisionHandlingOverride =
+		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	// Spawn projectile
+	ABASE_Projectile* projectile = world->SpawnActor<ABASE_Projectile>(
+		(UClass*)CurrentProjectile,
+		player->GetActorLocation() + playerController->playerGunLocation,
+		fireDirection.ToOrientationRotator(),
+		spawnParameters
+		);
+
+	// Launch the projectile
+	if (projectile) {
+		projectile->LaunchProjectile(fireDirection);
+	}
 }

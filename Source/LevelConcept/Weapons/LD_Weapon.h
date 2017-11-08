@@ -57,9 +57,12 @@ public:
 	FWeapon();
 public:
 	void FireWeapon(UWorld* world, class ALD_PlayerController* playerController, AActor* player);
-	void EquipWeapon(EWeaponType weapon);
 	void WeaponPickup(EWeaponType weaponPickedUp);
+
 private:
+	void EquipWeapon(EWeaponType weapon);
+	void ShootProjectile(UWorld* world, class ALD_PlayerController* playerController, AActor* player);
+
 	FString DEBUG_GetEWeaponTypeAsString(EWeaponType enumValue) {
 		const UEnum* enumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EWeaponType"), true);
 		if (!enumPtr) return FString("IVALID");
