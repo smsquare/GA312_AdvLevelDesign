@@ -14,7 +14,8 @@ const FWallInformation ALD_Wall::StickyWallInfo = FWallInformation(1.0f, 25.0f, 
 // Sets default values
 ALD_Wall::ALD_Wall() {
 	PrimaryActorTick.bCanEverTick = false;
-	
+	Tags.Add(FName("Wall"));
+
 	WallType = EWallFrictionType::WFT_Rough;
 	// Secret Wall variables //
 	IsSecretWall = false;
