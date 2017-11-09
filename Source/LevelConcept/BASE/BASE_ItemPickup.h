@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "GameFramework/Actor.h"
@@ -9,6 +7,7 @@ UENUM(BlueprintType)
 enum class EPickupType : uint8 {
 	PT_INVALID = 0	UMETA(Hidden, DisplayName = "INVALID"),
 	PT_CONSUMABLE	UMETA(DisplayName = "Consumable"),
+	PT_WEAPON		UMETA(DisplayName = "Weapon"),
 	PT_UPGRADE		UMETA(DisplayName = "Upgrade"),
 	MAX				UMETA(Hidden)
 };

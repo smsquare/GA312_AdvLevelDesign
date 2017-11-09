@@ -48,7 +48,6 @@ ALD_Player::ALD_Player() {
 	UsedDoubleJump = false;
 
 	// COMBAT //
-	pTypeOfProjectile = nullptr;
 	IsFireOnCooldown = false;
 	LightBADamage = 15.0f;
 	HeavyBACooldown = 37.5f;
@@ -332,8 +331,6 @@ void ALD_Player::OpenDoor() {
 				}
 				break;
 			case EKeyColor::KC_PURPLE:
-				if (GEngine) GEngine->AddOnScreenDebugMessage(
-					-1, 2, FColor::Purple, "Player kicked PURPLE Door");
 				if (KeyRing.GetNumOfPurpleKeys() > 0) {
 					KeyRing.UseKey(EKeyColor::KC_PURPLE);
 					door->OpenDoor();
@@ -345,7 +342,6 @@ void ALD_Player::OpenDoor() {
 					door->OpenDoor();
 				}
 				break;
-
 			}
 		}
 	}
@@ -557,35 +553,20 @@ void ALD_Player::DEBUG_ToggleDoubleJump() {
 /*************************************************************************
 								COMBAT
 **************************************************************************/
+// Function bound to the player's 'Fire' input
 void ALD_Player::Fire() {
-	//TODO: If not on cooldown
-	if (pTypeOfProjectile) {
-		UWorld* world = GetWorld();
-		if (world) {
-			ALD_PlayerController* playerController = 
-				(ALD_PlayerController*)UGameplayStatics::GetPlayerController(GetWorldPtr(), 0);
-			if (playerController) {
-				FVector fireDirection = playerController->GetPlayerAimingDirection();
-				fireDirection.Normalize();
-				FActorSpawnParameters spawnParameters;
-				spawnParameters.Owner = this;
-				spawnParameters.Instigator = Instigator;
-				spawnParameters.SpawnCollisionHandlingOverride = 
-					ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-				// Spawn projectile
-				ABASE_Projectile* projectile = world->SpawnActor<ABASE_Projectile>(
-					(UClass*)pTypeOfProjectile, 
-					this->GetActorLocation() + playerController->playerGunLocation, 
-					fireDirection.ToOrientationRotator(), 
-					spawnParameters
-				);
-				// shoot the projectile
-				if (projectile) {
-					projectile->LaunchProjectile(fireDirection);
-				}
-			}
+	UWorld* world = GetWorld();
+	if (world) {
+		ALD_PlayerController* playerController = 
+			(ALD_PlayerController*)UGameplayStatics::GetPlayerController(world, 0);
+		if (playerController) {
+			PlayerWeapon.FireWeapon(world, playerController, this);
 		}
 	}
+}
+
+void ALD_Player::ResetFireCooldown() {
+	PlayerWeapon.ResetShotCooldown();
 }
 
 void ALD_Player::PressedLightBasicAttack() {
@@ -676,6 +657,18 @@ void ALD_Player::ClearWallHoldTimer() {
 void ALD_Player::ClearWallSlideTimer() {
 	if (GetWorldPtr()) {
 		GetWorldPtr()->GetTimerManager().ClearTimer(WallSlideTimer);
+	}
+}
+
+void ALD_Player::StartFireCooldown(float rateOfFire) {
+	if (GetWorldPtr()) {
+		GetWorldPtr()->GetTimerManager().SetTimer(FireTimer, this, &ALD_Player::ResetFireCooldown, rateOfFire, false);
+	}
+}
+
+void ALD_Player::ClearFireTimer() {
+	if (GetWorldPtr()) {
+		GetWorldPtr()->GetTimerManager().ClearTimer(FireTimer);
 	}
 }
 

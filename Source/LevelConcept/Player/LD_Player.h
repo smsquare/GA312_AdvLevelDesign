@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "LD_Wall.h"
+#include "LD_Weapon.h"
 #include "LD_PlayerKeys.h"
 #include "LD_Player.generated.h"
 
@@ -270,16 +271,14 @@ public:
 	FPlayerKeys KeyRing;
 
 	//----------------------- COMBAT -------------------------//
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	// Handle the Player's weapon blaster functionality, including pickup and swap of weapons.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	FWeapon PlayerWeapon;
+	
 	float LightBADamage;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float HeavyBADamage;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Cooldowns")
 	float LightBACooldown; 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Cooldowns")
 	float HeavyBACooldown;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Projectile")
-	TSubclassOf<class ABASE_Projectile> pTypeOfProjectile;
 
 	//----------------------- INTERACT -------------------------//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interact|Levers")
@@ -352,14 +351,15 @@ public:
 
 	//*********************** COMBAT **************************//
 	void Fire();
-	void PressedLightBasicAttack();
-	void PressedHeavyBasicAttack();
+	void ResetFireCooldown();
 	void PressedKick();
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
 	bool GetIsFireOnCooldown() const;
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
 	void SetIsFireOnCooldown(const bool& value);
-
+	//TODO: DEPRECATE ALL FUNCTIONS LISTED BELOW IN COMBAT
+	void PressedLightBasicAttack();
+	void PressedHeavyBasicAttack();
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
 	EBasicAttackType GetBasicAttackInUse() const;
 	UFUNCTION(BlueprintCallable, Category = "Player|Combat")
@@ -381,8 +381,10 @@ public:
 	void ClearWallHoldTimer();
 	void ClearWallSlideTimer();
 
+	void StartFireCooldown(float rateOfFire);
+	void ClearFireTimer();
+	//TODO: THESE ALL NEED TO BE DEPRICATED
 	void StartBasicAttackCooldownTimer(EBasicAttackType typeofEBAT);
-
 	void StartLightBasicAttackTimer(const float& duration);
 	void ClearLightBasicAttackTimer();
 	void StartHeavyBasicAttackTimer(const float& duration);

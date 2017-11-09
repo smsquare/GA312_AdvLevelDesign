@@ -290,6 +290,9 @@ void ALD_MovingPlatform::Tick(float DeltaTime) {
 
 #if WITH_EDITOR
 void ALD_MovingPlatform::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) {
+	// Call the base class version  
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
 	//Get all components
 	TArray<UActorComponent*> ownedComponents;
 	GetComponents(ownedComponents);
@@ -334,8 +337,7 @@ void ALD_MovingPlatform::PostEditChangeProperty(struct FPropertyChangedEvent& Pr
 		DebugInfo.ScaleDebugLine(GetDebugRequiredInfo());
 	}
 
-	// Call the base class version  
-	Super::PostEditChangeProperty(PropertyChangedEvent);
+
 }
 #endif
 

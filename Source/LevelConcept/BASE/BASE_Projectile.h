@@ -30,26 +30,28 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Assets")
 	UStaticMeshComponent* ProjectileMesh;
-	UPROPERTY(EditAnywhere, Category = "Assets")
+	UPROPERTY(EditAnywhere, Category = "Assets|Audio")
 	USoundCue* ProjectileFireCue;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Assets|Audio")
+	USoundCue* ProjectileImpactCue;
 	UPROPERTY(VisibleDefaultsOnly, Category = "Info|Projectile")
 	USphereComponent* pCollisionComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
 	UProjectileMovementComponent* pProjectileMovementComponent;
-
-	UFUNCTION(Category = "Proximity")
-	void ProjectileCollisionDetection(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+private:
+	float TimeAlive;
 
 // BASE METHODS //
 public:
 	ABASE_Projectile();
+	virtual void Tick(float DeltaTime) override;
+	
 	UFUNCTION(BlueprintCallable, Category = "Fire")
 	void LaunchProjectile(const FVector& aLaunchDirection);
-
-public:
-	virtual void Tick(float DeltaTime) override;
+	UFUNCTION(Category = "Proximity")
+	virtual void ProjectileCollisionDetection(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 protected:
 	virtual void BeginPlay() override;
 };

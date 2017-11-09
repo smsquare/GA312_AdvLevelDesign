@@ -47,6 +47,7 @@ void FEnemyStats::OnDeath() {
 	ABASE_EnemyCharacter 
 ****************************/
 ABASE_EnemyCharacter::ABASE_EnemyCharacter() {
+	Tags.Add(FName("Enemy"));
 	PrimaryActorTick.bCanEverTick = true;
 	EnemyStats.HPMax = 100;
 	EnemyStats.MoveSpeed = 100;
