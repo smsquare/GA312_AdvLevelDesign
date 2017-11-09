@@ -25,13 +25,30 @@ FWeaponStats::FWeaponStats() {
 	ListOf_Projectiles.AddDefaulted((int)EWT::MAX);
 }
 
+int FWeaponStats::GetCurrAmmo() const {
+	return CurrAmmo;
+}
+
+int FWeaponStats::GetMaxAmmo() const {
+	return MaxAmmo;
+}
+
 float FWeaponStats::GetRateOfFire() const {
 	return RateOfFire;
 }
 
+TSubclassOf<class ABASE_Projectile> FWeaponStats::GetProjectile(const EWeaponType projectile) const {
+	return ListOf_Projectiles[(int)projectile];
+}
+
 void FWeaponStats::SetWeaponStats(const EWeaponType weapon) {
+	SetCurrAmmo(weapon);
 	SetMaxAmmo(weapon);
 	SetRateOfFire(weapon);
+}
+
+void FWeaponStats::SetCurrAmmo(const EWeaponType ammoType) {
+	CurrAmmo = ListOf_MaxAmmo[(int)ammoType];
 }
 
 void FWeaponStats::SetMaxAmmo(const EWeaponType ammoType) {
@@ -40,6 +57,22 @@ void FWeaponStats::SetMaxAmmo(const EWeaponType ammoType) {
 
 void FWeaponStats::SetRateOfFire(const EWeaponType weapon) {
 	RateOfFire = ListOf_RateOfFire[(int)weapon];
+}
+
+// Uses a round of the current ammunition
+// Returns true if that was the last round fired, false if there is still ammo
+bool FWeaponStats::UsedAmmo() {
+	bool result = false;
+	// Decrease the current ammo
+	CurrAmmo -= 1;
+	// If there is still ammo remaining
+	(CurrAmmo > 0) ? 
+		// Then result is false since there is still ammo
+		result = false : 
+		// if the ammo is out, result is true
+		result = true;
+
+	return result;
 }
 
 /*****************************************************
@@ -54,11 +87,25 @@ FWeapon::FWeapon() {
 
 void FWeapon::FireWeapon(UWorld* world, ALD_PlayerController* playerController, ALD_Player* player) {
 	if (!IsShotOnCooldown) {
-		// Check current ammo
-		// If player has ammo
-		ShootProjectile(world, playerController, player);
-
-		StartShotCooldown(player);
+		// Player is shooting the default weapon
+		if (CurrentWeapon == EWeaponType::WT_DEFAULT) {
+			ShootProjectile(world, playerController, player);
+			StartShotCooldown(player);
+			return;
+		}
+		// Handle special ammo
+		else {
+			// If player has ammo
+			if (WeaponStats.GetCurrAmmo() > 0) {
+				ShootProjectile(world, playerController, player);
+				StartShotCooldown(player);
+				// Use a round of ammo and if you ran out of ammo
+				if (WeaponStats.UsedAmmo()) {
+					// Equip your default weapon since you ran out of special ammo
+					EquipWeapon(EWeaponType::WT_DEFAULT);
+				}
+			}
+		}
 	}
 }
 
@@ -67,7 +114,8 @@ void FWeapon::WeaponPickup(EWeaponType weaponPickedUp) {
 }
 
 void FWeapon::EquipWeapon(EWeaponType weapon) {
-	CurrentProjectile = WeaponStats.ListOf_Projectiles[(int)weapon];
+	CurrentWeapon = weapon;
+	CurrentProjectile = WeaponStats.GetProjectile(weapon);
 	WeaponStats.SetWeaponStats(weapon);
 }
 

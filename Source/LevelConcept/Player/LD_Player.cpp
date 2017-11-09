@@ -331,8 +331,6 @@ void ALD_Player::OpenDoor() {
 				}
 				break;
 			case EKeyColor::KC_PURPLE:
-				if (GEngine) GEngine->AddOnScreenDebugMessage(
-					-1, 2, FColor::Purple, "Player kicked PURPLE Door");
 				if (KeyRing.GetNumOfPurpleKeys() > 0) {
 					KeyRing.UseKey(EKeyColor::KC_PURPLE);
 					door->OpenDoor();
@@ -344,7 +342,6 @@ void ALD_Player::OpenDoor() {
 					door->OpenDoor();
 				}
 				break;
-
 			}
 		}
 	}

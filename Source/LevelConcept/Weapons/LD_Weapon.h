@@ -33,10 +33,16 @@ public:
 
 public:
 	FWeaponStats();
+	FORCEINLINE int GetCurrAmmo() const;
+	FORCEINLINE int GetMaxAmmo() const;
 	FORCEINLINE float GetRateOfFire() const;
+	FORCEINLINE TSubclassOf<class ABASE_Projectile> GetProjectile(const EWeaponType projectile) const;
 	void SetWeaponStats(const EWeaponType weapon);
-	void SetMaxAmmo(const EWeaponType ammoType);	
+	void SetCurrAmmo(const EWeaponType ammoType);
+	void SetMaxAmmo(const EWeaponType ammoType);
 	void SetRateOfFire(const EWeaponType weapon);
+
+	bool UsedAmmo();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon|Stats")
@@ -76,7 +82,6 @@ public:
 
 private:
 	void EquipWeapon(EWeaponType weapon);
-
 	void ShootProjectile(UWorld* world, class ALD_PlayerController* playerController, AActor* player);
 
 	FString DEBUG_GetEWeaponTypeAsString(EWeaponType enumValue) {
