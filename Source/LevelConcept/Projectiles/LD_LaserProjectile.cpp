@@ -11,10 +11,6 @@ ALD_LaserProjectile::ALD_LaserProjectile() {
 }
 
 void ALD_LaserProjectile::ProjectileCollisionDetection(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	if (ProjectileImpactCue) {
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Emerald, "ProjectileImpactCue");
-		UGameplayStatics::PlaySound2D(OtherActor->GetWorld(), ProjectileImpactCue);
-	}
 	if (ProjectileOwner == EProjectileOwner::PO_Player) {
 		if (OtherActor->ActorHasTag(FName("Enemy"))) {
 			ABASE_EnemyCharacter* enemyCharacter = Cast<ABASE_EnemyCharacter>(OtherActor);

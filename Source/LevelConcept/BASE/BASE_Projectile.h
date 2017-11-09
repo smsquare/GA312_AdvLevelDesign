@@ -32,7 +32,7 @@ public:
 	UStaticMeshComponent* ProjectileMesh;
 	UPROPERTY(EditAnywhere, Category = "Assets|Audio")
 	USoundCue* ProjectileFireCue;
-	UPROPERTY(EditAnywhere, Category = "Assets|Audio")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Assets|Audio")
 	USoundCue* ProjectileImpactCue;
 	UPROPERTY(VisibleDefaultsOnly, Category = "Info|Projectile")
 	USphereComponent* pCollisionComponent;
@@ -46,11 +46,12 @@ private:
 public:
 	ABASE_Projectile();
 	virtual void Tick(float DeltaTime) override;
+	
 	UFUNCTION(BlueprintCallable, Category = "Fire")
 	void LaunchProjectile(const FVector& aLaunchDirection);
 	UFUNCTION(Category = "Proximity")
 	virtual void ProjectileCollisionDetection(UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
+	
 protected:
 	virtual void BeginPlay() override;
 };

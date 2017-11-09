@@ -8,7 +8,7 @@ class LEVELCONCEPT_API ALD_LaserProjectile : public ABASE_Projectile {
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere, Category = "Laser|Bounce")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Laser|Bounce")
 	uint8 NumBounces;
 
 public:
